@@ -12,3 +12,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 server:
   port: 8080
+token:
+  exp:
+    access: ${ACCESS_TOKEN} # 1800ms * 1000 == 30min
+    refresh : ${REFRESH_TOKEN} # 43200ms * 1000 = 1 week
+  secret: ${SECRET}
