@@ -24,10 +24,10 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
 @Table(
-uniqueConstraints = @UniqueConstraint(
-        name = "user_unq",
-        columnNames = {"email", "accountId"}
-    )
+        uniqueConstraints = @UniqueConstraint(
+                name = "user_unq",
+                columnNames = {"email", "accountId"}
+        )
 )
 public class User extends BasedIdEntity {
 
