@@ -24,7 +24,7 @@ import javax.persistence.ManyToOne;
 public class Comment extends BasedIdEntity {
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false, length = 15)
+    @Column(name = "comment_type", nullable = false, length = 15)
     private CommentType commentType;
 
     @Column(nullable = false, columnDefinition = "TEXT")
