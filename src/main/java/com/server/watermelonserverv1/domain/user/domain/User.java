@@ -24,10 +24,10 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
 @Table(
-uniqueConstraints = @UniqueConstraint(
-        name = "user_unq",
-        columnNames = {"email", "accountId"}
-    )
+        uniqueConstraints = @UniqueConstraint(
+                name = "user_unq",
+                columnNames = {"email", "accountId"}
+        )
 )
 public class User extends BasedIdEntity {
 
@@ -40,8 +40,8 @@ public class User extends BasedIdEntity {
     @Column(nullable = false)
     private String password;
 
-    @ColumnDefault("USER")
-    @Column(nullable = false)
+    @ColumnDefault("'USER'")
+    @Column(length = 5, nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -50,9 +50,10 @@ public class User extends BasedIdEntity {
     private Region region;
     
     @Builder
-    public User(String email, String accountId, String password) {
+    public User(String email, String accountId, String password, Role role) {
         this.email = email;
         this.accountId = accountId;
         this.password = password;
+        this.role = role;
     }
 }
