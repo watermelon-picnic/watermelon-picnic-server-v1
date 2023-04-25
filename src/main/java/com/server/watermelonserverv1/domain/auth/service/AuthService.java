@@ -9,6 +9,7 @@ import com.server.watermelonserverv1.domain.user.domain.repository.UserRepositor
 import com.server.watermelonserverv1.domain.user.domain.type.Role;
 import com.server.watermelonserverv1.global.exception.UserNotFoundException;
 import com.server.watermelonserverv1.global.security.JwtProvider;
+import com.server.watermelonserverv1.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtProvider jwtProvider;
+
+    private final SecurityUtil securityUtil;
 
     public void signUp(SignUpRequest request) {
         User dbInfo = userRepository.findByEmail(request.getEmail()).orElse(null);
@@ -42,5 +45,10 @@ public class AuthService {
                 .accessToken(jwtProvider.accessTokenGenerator(dbInfo.getEmail()))
                 .refreshToken(jwtProvider.refreshTokenGenerator(dbInfo))
                 .build();
+    }
+
+    public void logout() {
+        User contextInfo = securityUtil.getContextInfo();
+        // redis token 삭제
     }
 }

@@ -4,6 +4,7 @@ import com.server.watermelonserverv1.domain.auth.presentation.dto.request.SignUp
 import com.server.watermelonserverv1.domain.auth.presentation.dto.response.TokenResponse;
 import com.server.watermelonserverv1.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,4 +20,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public TokenResponse login(@RequestBody SignUpRequest request) { return authService.login(request); }
+
+    @DeleteMapping("/logout")
+    public void logout() { authService.logout(); }
 }
