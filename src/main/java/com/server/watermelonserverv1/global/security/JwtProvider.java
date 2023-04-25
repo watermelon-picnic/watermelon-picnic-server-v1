@@ -1,5 +1,7 @@
 package com.server.watermelonserverv1.global.security;
 
+import com.server.watermelonserverv1.domain.auth.domain.Refresh;
+import com.server.watermelonserverv1.domain.auth.domain.repository.RefreshRepository;
 import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.global.security.details.DetailsService;
 import io.jsonwebtoken.Claims;
@@ -21,6 +23,8 @@ public class JwtProvider {
     private final DetailsService detailsService;
 
     private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+    private final RefreshRepository refreshRepository;
 
     @Value("${token.exp.access}")
     private Long accessExp;
@@ -50,8 +54,13 @@ public class JwtProvider {
     }
 
     public String refreshTokenGenerator(User user) {
-        // redis 로직 작성
-        return generateToken(user.getEmail(), TokenType.REFRESH);
+        String token = generateToken(user.getEmail(), TokenType.REFRESH);
+        refreshRepository.save(Refresh.builder()
+                            .id(user.getId())
+                            .token(token)
+                            .timeToLive(refreshExp)
+                    .build());
+        return token;
     }
 
     private String generateToken(String email, TokenType type) {
@@ -66,7 +75,8 @@ public class JwtProvider {
                 .compact();
     }
 
-    public JwtProvider(DetailsService detailsService) {
+    public JwtProvider(DetailsService detailsService, RefreshRepository refreshRepository) {
         this.detailsService = detailsService;
+        this.refreshRepository = refreshRepository;
     }
 }
