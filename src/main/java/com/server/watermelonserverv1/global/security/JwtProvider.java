@@ -1,5 +1,6 @@
 package com.server.watermelonserverv1.global.security;
 
+import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.global.security.details.DetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -46,6 +47,11 @@ public class JwtProvider {
 
     public String accessTokenGenerator(String email) {
         return generateToken(email, TokenType.ACCESS);
+    }
+
+    public String refreshTokenGenerator(User user) {
+        // redis 로직 작성
+        return generateToken(user.getEmail(), TokenType.REFRESH);
     }
 
     private String generateToken(String email, TokenType type) {
