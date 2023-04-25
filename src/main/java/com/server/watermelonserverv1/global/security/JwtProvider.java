@@ -44,6 +44,10 @@ public class JwtProvider {
                 .getBody();
     }
 
+    public String accessTokenGenerator(String email) {
+        return generateToken(email, TokenType.ACCESS);
+    }
+
     private String generateToken(String email, TokenType type) {
         return Jwts.builder()
                 .setSubject(email)
