@@ -24,6 +24,12 @@ public class Refresh {
     @TimeToLive
     private Long timeToLive;
 
+    public Refresh updateInfo(String token, Long timeToLive) {
+        this.token = token;
+        this.timeToLive = timeToLive;
+        return this;
+    }
+
     @Builder
     public Refresh(Long id, String token, Long timeToLive) {
         this.id = id;
