@@ -1,5 +1,7 @@
 package com.server.watermelonserverv1.domain.auth.service;
 
+import com.server.watermelonserverv1.domain.auth.domain.Refresh;
+import com.server.watermelonserverv1.domain.auth.domain.repository.RefreshRepository;
 import com.server.watermelonserverv1.domain.auth.exception.ExistEmailException;
 import com.server.watermelonserverv1.domain.auth.exception.PasswordIncorrectException;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.request.SignUpRequest;
@@ -7,6 +9,7 @@ import com.server.watermelonserverv1.domain.auth.presentation.dto.response.Token
 import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.domain.user.domain.repository.UserRepository;
 import com.server.watermelonserverv1.domain.user.domain.type.Role;
+import com.server.watermelonserverv1.global.exception.TokenNotFoundException;
 import com.server.watermelonserverv1.global.exception.UserNotFoundException;
 import com.server.watermelonserverv1.global.security.JwtProvider;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
@@ -25,6 +28,8 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     private final SecurityUtil securityUtil;
+
+    private final RefreshRepository refreshRepository;
 
     public void signUp(SignUpRequest request) {
         User dbInfo = userRepository.findByEmail(request.getEmail()).orElse(null);
@@ -49,6 +54,8 @@ public class AuthService {
 
     public void logout() {
         User contextInfo = securityUtil.getContextInfo();
-        // redis token 삭제
+        Refresh refresh = refreshRepository.findById(contextInfo.getId())
+                .orElseThrow(()-> TokenNotFoundException.EXCEPTION);
+        refreshRepository.delete(refresh);
     }
 }
