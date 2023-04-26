@@ -16,7 +16,7 @@ public class DetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByAccountId(username)
+        User user = userRepository.findByEmail(username)
                 .orElseThrow(()->UserNotFoundException.EXCEPTION);
         return new Details(user);
     }

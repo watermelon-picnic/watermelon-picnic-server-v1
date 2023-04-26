@@ -10,6 +10,9 @@ spring:
     username: ${USERNAME}
     password: ${PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    port: ${REDIS_PORT}
+    host: ${REDIS_HOST}
 server:
   port: 8080
 token:
