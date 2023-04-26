@@ -49,6 +49,11 @@ public class JwtProvider {
                 .getBody();
     }
 
+    public boolean tokenExpired(String token) {
+        Claims tokenClaim = parseToken(token);
+        return tokenClaim.getExpiration().after(new Date());
+    }
+
     public String accessTokenGenerator(String email) {
         return generateToken(email, TokenType.ACCESS);
     }
