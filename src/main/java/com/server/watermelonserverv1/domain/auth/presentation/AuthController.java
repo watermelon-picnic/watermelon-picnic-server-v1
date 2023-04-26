@@ -6,6 +6,7 @@ import com.server.watermelonserverv1.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,4 +24,7 @@ public class AuthController {
 
     @DeleteMapping("/logout")
     public void logout() { authService.logout(); }
+
+    @PutMapping("/reissue")
+    public TokenResponse reissue() { return authService.reissue(); }
 }

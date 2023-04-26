@@ -4,6 +4,7 @@ import com.server.watermelonserverv1.domain.auth.domain.Refresh;
 import com.server.watermelonserverv1.domain.auth.domain.repository.RefreshRepository;
 import com.server.watermelonserverv1.domain.auth.exception.ExistEmailException;
 import com.server.watermelonserverv1.domain.auth.exception.PasswordIncorrectException;
+import com.server.watermelonserverv1.domain.auth.exception.TokenExpiredException;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.request.SignUpRequest;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.response.TokenResponse;
 import com.server.watermelonserverv1.domain.user.domain.User;
@@ -57,5 +58,16 @@ public class AuthService {
         Refresh refresh = refreshRepository.findById(contextInfo.getId())
                 .orElseThrow(()-> TokenNotFoundException.EXCEPTION);
         refreshRepository.delete(refresh);
+    }
+
+    public TokenResponse reissue() {
+        User contextInfo = securityUtil.getContextInfo();
+        String token = refreshRepository.findById(contextInfo.getId())
+                .orElseThrow(()-> TokenNotFoundException.EXCEPTION).getToken();
+        if (jwtProvider.tokenExpired(token)) throw TokenExpiredException.EXCEPTION;
+        return TokenResponse.builder()
+                .accessToken(jwtProvider.accessTokenGenerator(contextInfo.getEmail()))
+                .refreshToken(jwtProvider.refreshTokenGenerator(contextInfo))
+                .build();
     }
 }
