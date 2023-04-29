@@ -18,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @RequiredArgsConstructor
 @Service
 public class AuthService {
@@ -37,7 +40,7 @@ public class AuthService {
         if (dbInfo != null) throw ExistEmailException.EXCEPTION;
         userRepository.save(User.builder()
                         .email(request.getEmail())
-                        .password(request.getPassword())
+                        .password(passwordEncoder.encode(request.getPassword()))
                         .role(Role.USER)
                 .build());
     }
@@ -69,5 +72,11 @@ public class AuthService {
                 .accessToken(jwtProvider.accessTokenGenerator(contextInfo.getEmail()))
                 .refreshToken(jwtProvider.refreshTokenGenerator(contextInfo))
                 .build();
+    }
+
+    public boolean validationEmail(String email) {
+        Pattern pattern = Pattern.compile("[\\d\\w]+@[\\w]+\\.[\\w]+(.[\\w]+)?");
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }
