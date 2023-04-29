@@ -18,7 +18,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String token = resolveRequest(request);
-        if (!token.isEmpty()) {
+        if (token != null) {
             String accountId = jwtProvider.parseToken(token).getSubject();
             SecurityContextHolder
                     .getContext()
