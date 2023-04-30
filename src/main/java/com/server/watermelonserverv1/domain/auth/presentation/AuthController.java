@@ -7,12 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -40,6 +40,9 @@ public class AuthController {
     @PutMapping("/reissue")
     public TokenResponse reissue() { return authService.reissue(); }
 
-    @RequestMapping(value = "/email", method = RequestMethod.HEAD)
-    public void sendEmail(@RequestHeader String email) { authService.emailSender(email); }
+    @GetMapping(value = "/transmission-email")
+    public String sendEmail(@RequestHeader String email) { return authService.emailSender(email); }
+
+    @GetMapping("/nickname/{nickname}")
+    public boolean isNicknameExist(@PathVariable String nickname) { return authService.isNicknameExist(nickname); }
 }

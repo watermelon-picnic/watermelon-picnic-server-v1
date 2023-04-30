@@ -93,7 +93,7 @@ public class AuthService {
         return new ResponseEntity<>("email is not matched in requirement", HttpStatus.BAD_REQUEST);
     }
 
-    public void emailSender(String email) {
+    public String emailSender(String email) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         String randomValue = String.format("%d", (int)Math.floor(Math.random() * (999999 - 100000 + 1) + 100000));
         simpleMailMessage.setTo(email);
@@ -105,5 +105,10 @@ public class AuthService {
                         .timeToLive(5L)
                 .build());
         javaMailSender.send(simpleMailMessage);
+        return randomValue;
+    }
+
+    public boolean isNicknameExist(String nickname) {
+        return userRepository.findByNickname(nickname).isPresent();
     }
 }
