@@ -6,7 +6,7 @@ import com.server.watermelonserverv1.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,8 +34,8 @@ public class AuthController {
     public void logout() { authService.logout(); }
 
     // this api will erase
-    @RequestMapping(value = "/verification-email", method = RequestMethod.HEAD)
-    public ResponseEntity<Object> validationEmail(@RequestHeader String email) { return authService.validationEmail(email); }
+    @GetMapping("/verification-email")
+    public ResponseEntity<String> validationEmail(@RequestHeader String email) { return authService.validationEmail(email); }
 
     @PutMapping("/reissue")
     public TokenResponse reissue() { return authService.reissue(); }

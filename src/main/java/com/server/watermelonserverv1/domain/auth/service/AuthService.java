@@ -76,12 +76,12 @@ public class AuthService {
                 .build();
     }
 
-    public ResponseEntity<Object> validationEmail(String email) {
+    public ResponseEntity<String> validationEmail(String email) {
         if (userRepository.findByEmail(email).isPresent())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw ExistEmailException.EXCEPTION;
         Pattern pattern = Pattern.compile("[\\d\\w]+@[\\w]+\\.[\\w]+(.[\\w]+)?");
         Matcher matcher = pattern.matcher(email);
-        if (matcher.matches()) return new ResponseEntity<>(HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (matcher.matches()) return new ResponseEntity<>("verification complete", HttpStatus.OK);
+        return new ResponseEntity<>("email is not matched in requirement", HttpStatus.BAD_REQUEST);
     }
 }
