@@ -1,6 +1,8 @@
 package com.server.watermelonserverv1.domain.auth.service;
 
+import com.server.watermelonserverv1.domain.auth.domain.AuthCode;
 import com.server.watermelonserverv1.domain.auth.domain.Refresh;
+import com.server.watermelonserverv1.domain.auth.domain.repository.AuthCodeRepository;
 import com.server.watermelonserverv1.domain.auth.domain.repository.RefreshRepository;
 import com.server.watermelonserverv1.domain.auth.exception.ExistEmailException;
 import com.server.watermelonserverv1.domain.auth.exception.PasswordIncorrectException;
@@ -17,6 +19,8 @@ import com.server.watermelonserverv1.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +40,10 @@ public class AuthService {
     private final SecurityUtil securityUtil;
 
     private final RefreshRepository refreshRepository;
+
+    private final JavaMailSender javaMailSender;
+
+    private final AuthCodeRepository authCodeRepository;
 
     public void signUp(SignUpRequest request) {
         User dbInfo = userRepository.findByEmail(request.getEmail()).orElse(null);
@@ -83,5 +91,19 @@ public class AuthService {
         Matcher matcher = pattern.matcher(email);
         if (matcher.matches()) return new ResponseEntity<>("verification complete", HttpStatus.OK);
         return new ResponseEntity<>("email is not matched in requirement", HttpStatus.BAD_REQUEST);
+    }
+
+    public void emailSender(String email) {
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        String randomValue = String.format("%d", (int)Math.floor(Math.random() * (999999 - 100000 + 1) + 100000));
+        simpleMailMessage.setTo(email);
+        simpleMailMessage.setSubject("수박나들이에서 보냅니다.");
+        simpleMailMessage.setText("이메일 인증코드입니다.\n"+randomValue);
+        authCodeRepository.save(AuthCode.builder()
+                        .email(email)
+                        .authCode(randomValue)
+                        .timeToLive(5L)
+                .build());
+        javaMailSender.send(simpleMailMessage);
     }
 }

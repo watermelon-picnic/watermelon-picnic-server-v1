@@ -39,4 +39,7 @@ public class AuthController {
 
     @PutMapping("/reissue")
     public TokenResponse reissue() { return authService.reissue(); }
+
+    @RequestMapping(value = "/email", method = RequestMethod.HEAD)
+    public void sendEmail(@RequestHeader String email) { authService.emailSender(email); }
 }
