@@ -4,7 +4,9 @@ import com.server.watermelonserverv1.domain.auth.domain.AuthCode;
 import com.server.watermelonserverv1.domain.auth.domain.Refresh;
 import com.server.watermelonserverv1.domain.auth.domain.repository.AuthCodeRepository;
 import com.server.watermelonserverv1.domain.auth.domain.repository.RefreshRepository;
+import com.server.watermelonserverv1.domain.auth.exception.BirthBadRequestException;
 import com.server.watermelonserverv1.domain.auth.exception.ExistEmailException;
+import com.server.watermelonserverv1.domain.auth.exception.ExistNicknameException;
 import com.server.watermelonserverv1.domain.auth.exception.PasswordIncorrectException;
 import com.server.watermelonserverv1.domain.auth.exception.TokenExpiredException;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.request.SignUpRequest;
@@ -24,6 +26,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,11 +53,19 @@ public class AuthService {
     public void signUp(SignUpRequest request) {
         User dbInfo = userRepository.findByEmail(request.getEmail()).orElse(null);
         if (dbInfo != null) throw ExistEmailException.EXCEPTION;
-        userRepository.save(User.builder()
-                        .email(request.getEmail())
-                        .password(passwordEncoder.encode(request.getPassword()))
-                        .role(Role.USER)
-                .build());
+        dbInfo = userRepository.findByNickname(request.getNickname()).orElse(null);
+        if (dbInfo != null) throw ExistNicknameException.EXCEPTION;
+        DateFormat format = new SimpleDateFormat("yyMMdd");
+        try {
+
+            userRepository.save(User.builder()
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .role(Role.USER)
+                    .nickname(request.getNickname())
+                    .birth(format.parse(request.getBirth()))
+                    .build());
+        } catch (ParseException e) { throw BirthBadRequestException.EXCEPTION; }
     }
 
     public TokenResponse login(SignUpRequest request) {
