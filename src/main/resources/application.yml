@@ -13,6 +13,17 @@ spring:
   redis:
     port: ${REDIS_PORT}
     host: ${REDIS_HOST}
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 server:
   port: 8080
 token:
