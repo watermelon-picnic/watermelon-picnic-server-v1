@@ -17,6 +17,16 @@ public class SignUpRequest {
     )
     private String email;
 
+    @Pattern(
+            regexp = "[0-9]{6,6}",
+            message = "birth is not matched"
+    )
+    @NotBlank(message = "please insert any value in birth request")
+    private String birth;
+
+    @NotBlank(message = "please insert any value in nickname request")
+    private String nickname;
+
     @NotBlank(message = "please insert any value in password request")
     @Size(min = 8, max = 255, message = "please follow password size(8~255) requirement")
     private String password;
