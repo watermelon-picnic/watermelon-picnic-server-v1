@@ -15,6 +15,8 @@ import com.server.watermelonserverv1.global.exception.UserNotFoundException;
 import com.server.watermelonserverv1.global.security.JwtProvider;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -74,9 +76,12 @@ public class AuthService {
                 .build();
     }
 
-    public boolean validationEmail(String email) {
+    public ResponseEntity<Object> validationEmail(String email) {
+        if (userRepository.findByEmail(email).isPresent())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Pattern pattern = Pattern.compile("[\\d\\w]+@[\\w]+\\.[\\w]+(.[\\w]+)?");
         Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+        if (matcher.matches()) return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

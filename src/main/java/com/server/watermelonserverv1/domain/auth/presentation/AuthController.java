@@ -4,17 +4,18 @@ import com.server.watermelonserverv1.domain.auth.presentation.dto.request.SignUp
 import com.server.watermelonserverv1.domain.auth.presentation.dto.response.TokenResponse;
 import com.server.watermelonserverv1.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -33,10 +34,8 @@ public class AuthController {
     public void logout() { authService.logout(); }
 
     // this api will erase
-    @GetMapping("/{email}")
-    public boolean validationEmail(@PathVariable String email) {
-        return authService.validationEmail(email);
-    }
+    @RequestMapping(value = "/verification-email", method = RequestMethod.HEAD)
+    public ResponseEntity<Object> validationEmail(@RequestHeader String email) { return authService.validationEmail(email); }
 
     @PutMapping("/reissue")
     public TokenResponse reissue() { return authService.reissue(); }
