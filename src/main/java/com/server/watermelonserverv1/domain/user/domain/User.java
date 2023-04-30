@@ -26,7 +26,7 @@ import javax.persistence.UniqueConstraint;
 @Table(
         uniqueConstraints = @UniqueConstraint(
                 name = "user_unq",
-                columnNames = {"email"}
+                columnNames = {"email", "nickname"}
         )
 )
 public class User extends BasedIdEntity {
@@ -36,6 +36,9 @@ public class User extends BasedIdEntity {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false, length = 20, unique = true)
+    private String nickname;
 
     @ColumnDefault("'USER'")
     @Column(length = 5, nullable = false)
@@ -47,9 +50,10 @@ public class User extends BasedIdEntity {
     private Region region;
     
     @Builder
-    public User(String email, String password, Role role) {
+    public User(String email, String password, String nickname, Role role) {
         this.email = email;
         this.password = password;
+        this.nickname = nickname;
         this.role = role;
     }
 }
