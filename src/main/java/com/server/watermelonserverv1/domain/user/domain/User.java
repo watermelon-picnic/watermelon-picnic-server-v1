@@ -17,7 +17,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import java.util.Date;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -45,15 +48,20 @@ public class User extends BasedIdEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    private Date birth;
+
     @ManyToOne(targetEntity = Region.class)
     @JoinColumn(name = "region_id")
     private Region region;
     
     @Builder
-    public User(String email, String password, String nickname, Role role) {
+    public User(String email, String password, String nickname, Role role, Date birth) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.role = role;
+        this.birth = birth;
     }
 }
