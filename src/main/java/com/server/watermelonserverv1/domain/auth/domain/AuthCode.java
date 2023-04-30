@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 
 import javax.persistence.Id;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,18 +18,18 @@ import javax.persistence.Id;
 public class AuthCode {
 
     @Id
-    private Long id;
+    private String email;
 
     @Setter
     @Indexed
     private String authCode;
 
-    @TimeToLive
+    @TimeToLive(unit = TimeUnit.MINUTES)
     private Long timeToLive;
 
     @Builder
-    public AuthCode(Long id, String authCode, Long timeToLive) {
-        this.id = id;
+    public AuthCode(String email, String authCode, Long timeToLive) {
+        this.email = email;
         this.authCode = authCode;
         this.timeToLive = timeToLive;
     }
