@@ -12,7 +12,8 @@ public enum ErrorCode {
     EXIT_EMAIL_PRECONDITION_FAILED("이미 존재하는 이메일입니다", 400),
     EXIT_NICKNAME_PRECONDITION_FAILED("이미 존재하는 닉네임입니다.", 400),
     BIRTH_BAD_REQUEST("잘못된 생년월일입니다.", 400),
-    EMAIL_NOT_MATCHED_REQUIREMENT("email 이 요구사항과 맞지 않습니다.", 400);
+    EMAIL_NOT_MATCHED_REQUIREMENT("email 이 요구사항과 맞지 않습니다.", 400),
+    EMAIL_CONFLICT("email 전송 중 충돌이 발생했습니다.",409);
 
     private final String message;
     private final int statusCode;
