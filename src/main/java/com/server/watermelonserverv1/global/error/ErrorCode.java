@@ -11,7 +11,8 @@ public enum ErrorCode {
     AUTH_BAD_REQUEST("인증을 위해 토큰을 동봉해 주십시오.", 400),
     EXIT_EMAIL_PRECONDITION_FAILED("이미 존재하는 이메일입니다", 400),
     EXIT_NICKNAME_PRECONDITION_FAILED("이미 존재하는 닉네임입니다.", 400),
-    BIRTH_BAD_REQUEST("잘못된 생년월일입니다.", 400);
+    BIRTH_BAD_REQUEST("잘못된 생년월일입니다.", 400),
+    EMAIL_NOT_MATCHED_REQUIREMENT("email 이 요구사항과 맞지 않습니다.", 400);
 
     private final String message;
     private final int statusCode;
