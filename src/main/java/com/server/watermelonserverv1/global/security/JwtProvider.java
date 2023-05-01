@@ -75,7 +75,7 @@ public class JwtProvider {
                 .claim("type",
                         type.equals(TokenType.ACCESS) ? TokenType.ACCESS.name() : TokenType.REFRESH.name())
                 .setExpiration(new Date(System.currentTimeMillis() +
-                        (type.equals(TokenType.ACCESS) ? accessExp : refreshExp)))
+                        (type.equals(TokenType.ACCESS) ? accessExp * 1000L : refreshExp * 1000L)))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
