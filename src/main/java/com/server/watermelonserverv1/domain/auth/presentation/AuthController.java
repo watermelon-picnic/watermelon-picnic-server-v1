@@ -35,7 +35,7 @@ public class AuthController {
 
     // this api will erase
     @GetMapping("/verification-email")
-    public ResponseEntity<String> validationEmail(@RequestHeader String email) { return authService.validationEmail(email); }
+    public void validationEmail(@RequestHeader String email) { authService.validationEmail(email); }
 
     @PutMapping("/reissue")
     public TokenResponse reissue() { return authService.reissue(); }

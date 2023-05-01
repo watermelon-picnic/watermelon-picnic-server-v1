@@ -5,6 +5,7 @@ import com.server.watermelonserverv1.domain.auth.domain.Refresh;
 import com.server.watermelonserverv1.domain.auth.domain.repository.AuthCodeRepository;
 import com.server.watermelonserverv1.domain.auth.domain.repository.RefreshRepository;
 import com.server.watermelonserverv1.domain.auth.exception.BirthBadRequestException;
+import com.server.watermelonserverv1.domain.auth.exception.EmailBadRequestException;
 import com.server.watermelonserverv1.domain.auth.exception.ExistEmailException;
 import com.server.watermelonserverv1.domain.auth.exception.ExistNicknameException;
 import com.server.watermelonserverv1.domain.auth.exception.PasswordIncorrectException;
@@ -97,13 +98,12 @@ public class AuthService {
                 .build();
     }
 
-    public ResponseEntity<String> validationEmail(String email) {
+    public void validationEmail(String email) {
         if (userRepository.findByEmail(email).isPresent())
             throw ExistEmailException.EXCEPTION;
         Pattern pattern = Pattern.compile("[\\d\\w]+@[\\w]+\\.[\\w]+(.[\\w]+)?");
         Matcher matcher = pattern.matcher(email);
-        if (matcher.matches()) return new ResponseEntity<>("verification complete", HttpStatus.OK);
-        return new ResponseEntity<>("email is not matched in requirement", HttpStatus.BAD_REQUEST);
+        if (!matcher.matches()) throw EmailBadRequestException.EXCEPTION;
     }
 
     public String emailSender(String email) {
