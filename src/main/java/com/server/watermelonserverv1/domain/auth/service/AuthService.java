@@ -8,8 +8,10 @@ import com.server.watermelonserverv1.domain.auth.exception.BirthBadRequestExcept
 import com.server.watermelonserverv1.domain.auth.exception.EmailBadRequestException;
 import com.server.watermelonserverv1.domain.auth.exception.ExistEmailException;
 import com.server.watermelonserverv1.domain.auth.exception.ExistNicknameException;
+import com.server.watermelonserverv1.domain.auth.exception.MessageConfigException;
 import com.server.watermelonserverv1.domain.auth.exception.PasswordIncorrectException;
 import com.server.watermelonserverv1.domain.auth.exception.TokenExpiredException;
+import com.server.watermelonserverv1.domain.auth.presentation.dto.request.LoginRequest;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.request.SignUpRequest;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.response.TokenResponse;
 import com.server.watermelonserverv1.domain.user.domain.User;
@@ -20,13 +22,14 @@ import com.server.watermelonserverv1.global.exception.UserNotFoundException;
 import com.server.watermelonserverv1.global.security.JwtProvider;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,7 +72,7 @@ public class AuthService {
         } catch (ParseException e) { throw BirthBadRequestException.EXCEPTION; }
     }
 
-    public TokenResponse login(SignUpRequest request) {
+    public TokenResponse login(LoginRequest request) {
         User dbInfo = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(()->UserNotFoundException.EXCEPTION);
         if (!passwordEncoder.matches(request.getPassword(), dbInfo.getPassword()))
@@ -123,5 +126,20 @@ public class AuthService {
 
     public boolean isNicknameExist(String nickname) {
         return userRepository.findByNickname(nickname).isPresent();
+    }
+
+    public void sendToChangePassword() {
+        User contextInfo = securityUtil.getContextInfo();
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        String htmlMsg = String.format(
+                "<h3>%s 님! 비밀번호 변경을 원하신다면 다음 링크를 클릭해 주십시오</h3><br/><a href=\"{URL}\">비밀번호 변경하러 가기</a>",
+                contextInfo.getNickname());
+        try {
+            helper.setTo(contextInfo.getEmail());
+            helper.setSubject("수박나들이에서 보냅니다.");
+            helper.setText(htmlMsg, true);
+        } catch (MessagingException e) { throw MessageConfigException.EXCEPTION; }
+        javaMailSender.send(mimeMessage);
     }
 }

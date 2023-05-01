@@ -1,10 +1,10 @@
 package com.server.watermelonserverv1.domain.auth.presentation;
 
+import com.server.watermelonserverv1.domain.auth.presentation.dto.request.LoginRequest;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.request.SignUpRequest;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.response.TokenResponse;
 import com.server.watermelonserverv1.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +28,7 @@ public class AuthController {
     public void signUp(@Valid @RequestBody SignUpRequest request) { authService.signUp(request); }
 
     @PostMapping("/login")
-    public TokenResponse login(@Valid @RequestBody SignUpRequest request) { return authService.login(request); }
+    public TokenResponse login(@Valid @RequestBody LoginRequest request) { return authService.login(request); }
 
     @DeleteMapping("/logout")
     public void logout() { authService.logout(); }
@@ -45,4 +45,9 @@ public class AuthController {
 
     @GetMapping("/nickname/{nickname}")
     public boolean isNicknameExist(@PathVariable String nickname) { return authService.isNicknameExist(nickname); }
+
+    @GetMapping("/mail/password")
+    public void sendToChangePassword() {
+        authService.sendToChangePassword();
+    }
 }
