@@ -40,14 +40,12 @@ public class AuthController {
     @PutMapping("/reissue")
     public TokenResponse reissue() { return authService.reissue(); }
 
-    @GetMapping(value = "/transmission-email")
+    @GetMapping("/transmission-email")
     public String sendEmail(@RequestHeader String email) { return authService.emailSender(email); }
 
     @GetMapping("/nickname/{nickname}")
     public boolean isNicknameExist(@PathVariable String nickname) { return authService.isNicknameExist(nickname); }
 
     @GetMapping("/mail/password")
-    public void sendToChangePassword() {
-        authService.sendToChangePassword();
-    }
+    public void sendToChangePassword() { authService.sendToChangePassword(); }
 }

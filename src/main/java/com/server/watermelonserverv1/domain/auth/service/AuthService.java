@@ -110,11 +110,14 @@ public class AuthService {
     }
 
     public String emailSender(String email) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        MimeMessage simpleMailMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(simpleMailMessage, "utf-8");
         String randomValue = String.format("%d", (int)Math.floor(Math.random() * (999999 - 100000 + 1) + 100000));
-        simpleMailMessage.setTo(email);
-        simpleMailMessage.setSubject("수박나들이에서 보냅니다.");
-        simpleMailMessage.setText("이메일 인증코드입니다.\n"+randomValue);
+        try {
+            helper.setTo(email);
+            helper.setSubject("수박나들이에서 보냅니다.");
+            helper.setText(String.format("<h1>이메일 인증코드입니다.</h1><br/><strong>%s</strong>", randomValue), true);
+        } catch (MessagingException e) { throw MessageConfigException.EXCEPTION; }
         authCodeRepository.save(AuthCode.builder()
                         .email(email)
                         .authCode(randomValue)
