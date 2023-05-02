@@ -13,7 +13,8 @@ public enum ErrorCode {
     EXIT_NICKNAME_PRECONDITION_FAILED("이미 존재하는 닉네임입니다.", 400),
     BIRTH_BAD_REQUEST("잘못된 생년월일입니다.", 400),
     EMAIL_NOT_MATCHED_REQUIREMENT("email 이 요구사항과 맞지 않습니다.", 400),
-    EMAIL_CONFLICT("email 전송 중 충돌이 발생했습니다.",409);
+    EMAIL_CONFLICT("email 전송 중 충돌이 발생했습니다.",409),
+    TOKEN_TYPE_NOT_MATCHED("입력받은 토큰으로 인가되지 않았습니다.", 403);
 
     private final String message;
     private final int statusCode;
