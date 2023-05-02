@@ -33,7 +33,7 @@ public class JwtProvider {
     private Long refreshExp;
 
     private enum TokenType{
-        ACCESS, REFRESH
+        ACCESS, REFRESH, PASSWORD
     }
 
     public Authentication generateAuthentication(String accountId) {
@@ -68,14 +68,19 @@ public class JwtProvider {
         return token;
     }
 
+    public String passwordTokenGenerator(String email) {
+        return generateToken(email, TokenType.PASSWORD);
+    }
+
     private String generateToken(String email, TokenType type) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .claim("type",
-                        type.equals(TokenType.ACCESS) ? TokenType.ACCESS.name() : TokenType.REFRESH.name())
+                        type.equals(TokenType.ACCESS) ? TokenType.ACCESS.name() :
+                                (type.equals(TokenType.REFRESH) ? TokenType.REFRESH.name() : TokenType.PASSWORD.name()))
                 .setExpiration(new Date(System.currentTimeMillis() +
-                        (type.equals(TokenType.ACCESS) ? accessExp * 1000L : refreshExp * 1000L)))
+                        (type.equals(TokenType.REFRESH) ? refreshExp * 1000L : accessExp * 1000L)))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
