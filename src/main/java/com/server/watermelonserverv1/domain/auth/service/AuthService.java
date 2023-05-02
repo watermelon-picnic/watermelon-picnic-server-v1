@@ -91,17 +91,6 @@ public class AuthService {
         refreshRepository.delete(refresh);
     }
 
-    public TokenResponse reissue() {
-        User contextInfo = securityUtil.getContextInfo();
-        String token = refreshRepository.findById(contextInfo.getId())
-                .orElseThrow(()-> TokenNotFoundException.EXCEPTION).getToken();
-        if (jwtProvider.tokenExpired(token)) throw TokenExpiredException.EXCEPTION;
-        return TokenResponse.builder()
-                .accessToken(jwtProvider.accessTokenGenerator(contextInfo.getEmail()))
-                .refreshToken(jwtProvider.refreshTokenGenerator(contextInfo))
-                .build();
-    }
-
     public void validationEmail(String email) {
         if (userRepository.findByEmail(email).isPresent())
             throw ExistEmailException.EXCEPTION;
@@ -130,6 +119,17 @@ public class AuthService {
 
     public boolean isNicknameExist(String nickname) {
         return userRepository.findByNickname(nickname).isPresent();
+    }
+
+    public TokenResponse reissue() {
+        User contextInfo = securityUtil.getContextInfo();
+        String token = refreshRepository.findById(contextInfo.getId())
+                .orElseThrow(()-> TokenNotFoundException.EXCEPTION).getToken();
+        if (jwtProvider.tokenExpired(token)) throw TokenExpiredException.EXCEPTION;
+        return TokenResponse.builder()
+                .accessToken(jwtProvider.accessTokenGenerator(contextInfo.getEmail()))
+                .refreshToken(jwtProvider.refreshTokenGenerator(contextInfo))
+                .build();
     }
 
     public void sendToChangePassword() {

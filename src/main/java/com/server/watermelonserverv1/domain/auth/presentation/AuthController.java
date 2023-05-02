@@ -37,14 +37,14 @@ public class AuthController {
     @GetMapping("/verification-email")
     public void validationEmail(@RequestHeader String email) { authService.validationEmail(email); }
 
-    @PutMapping("/reissue")
-    public TokenResponse reissue() { return authService.reissue(); }
-
     @GetMapping("/transmission-email")
     public String sendEmail(@RequestHeader String email) { return authService.emailSender(email); }
 
     @GetMapping("/nickname/{nickname}")
     public boolean isNicknameExist(@PathVariable String nickname) { return authService.isNicknameExist(nickname); }
+    //
+    @PutMapping("/reissue")
+    public TokenResponse reissue() { return authService.reissue(); }
 
     @GetMapping("/mail/password")
     public void sendToChangePassword() { authService.sendToChangePassword(); }
