@@ -55,7 +55,12 @@ public class User extends BasedIdEntity {
     @ManyToOne(targetEntity = Region.class)
     @JoinColumn(name = "region_id")
     private Region region;
-    
+
+    public User updatePassword(String password) {
+        this.password = password;
+        return this;
+    }
+
     @Builder
     public User(String email, String password, String nickname, Role role, Date birth) {
         this.email = email;
