@@ -22,7 +22,6 @@ import com.server.watermelonserverv1.global.exception.UserNotFoundException;
 import com.server.watermelonserverv1.global.security.JwtProvider;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -144,5 +143,10 @@ public class AuthService {
             helper.setText(htmlMsg, true);
         } catch (MessagingException e) { throw MessageConfigException.EXCEPTION; }
         javaMailSender.send(mimeMessage);
+    }
+
+    public String passwordSwitchPage() {
+        String email = securityUtil.getContextInfo().getEmail();
+        return jwtProvider.passwordTokenGenerator(email);
     }
 }

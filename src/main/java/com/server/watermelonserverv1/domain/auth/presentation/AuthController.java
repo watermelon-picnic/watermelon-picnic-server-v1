@@ -48,4 +48,7 @@ public class AuthController {
 
     @GetMapping("/mail/password")
     public void sendToChangePassword() { authService.sendToChangePassword(); }
+
+    @GetMapping("/password")
+    public String passwordSwitchPage() { return authService.passwordSwitchPage(); }
 }
