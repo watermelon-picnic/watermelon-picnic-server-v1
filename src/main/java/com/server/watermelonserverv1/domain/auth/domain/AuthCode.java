@@ -4,30 +4,33 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 
+import java.util.concurrent.TimeUnit;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RedisHash
-public class Refresh {
+public class AuthCode {
 
     @Id
-    private Long id;
+    private String email;
 
+    @Setter
     @Indexed
-    private String token;
+    private String authCode;
 
-    @TimeToLive
+    @TimeToLive(unit = TimeUnit.MINUTES)
     private Long timeToLive;
 
     @Builder
-    public Refresh(Long id, String token, Long timeToLive) {
-        this.id = id;
-        this.token = token;
+    public AuthCode(String email, String authCode, Long timeToLive) {
+        this.email = email;
+        this.authCode = authCode;
         this.timeToLive = timeToLive;
     }
 }

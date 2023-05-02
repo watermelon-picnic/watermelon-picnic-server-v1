@@ -17,7 +17,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import java.util.Date;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,7 +29,7 @@ import javax.persistence.UniqueConstraint;
 @Table(
         uniqueConstraints = @UniqueConstraint(
                 name = "user_unq",
-                columnNames = {"email"}
+                columnNames = {"email", "nickname"}
         )
 )
 public class User extends BasedIdEntity {
@@ -37,19 +40,33 @@ public class User extends BasedIdEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, length = 20, unique = true)
+    private String nickname;
+
     @ColumnDefault("'USER'")
     @Column(length = 5, nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    private Date birth;
+
     @ManyToOne(targetEntity = Region.class)
     @JoinColumn(name = "region_id")
     private Region region;
-    
+
+    public User updatePassword(String password) {
+        this.password = password;
+        return this;
+    }
+
     @Builder
-    public User(String email, String password, Role role) {
+    public User(String email, String password, String nickname, Role role, Date birth) {
         this.email = email;
         this.password = password;
+        this.nickname = nickname;
         this.role = role;
+        this.birth = birth;
     }
 }
