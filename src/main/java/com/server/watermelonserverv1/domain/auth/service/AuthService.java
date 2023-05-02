@@ -11,6 +11,7 @@ import com.server.watermelonserverv1.domain.auth.exception.ExistNicknameExceptio
 import com.server.watermelonserverv1.domain.auth.exception.MessageConfigException;
 import com.server.watermelonserverv1.domain.auth.exception.PasswordIncorrectException;
 import com.server.watermelonserverv1.domain.auth.exception.TokenExpiredException;
+import com.server.watermelonserverv1.domain.auth.exception.TokenTypeNotMatchedException;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.request.LoginRequest;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.request.SignUpRequest;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.response.TokenResponse;
@@ -21,6 +22,7 @@ import com.server.watermelonserverv1.global.exception.TokenNotFoundException;
 import com.server.watermelonserverv1.global.exception.UserNotFoundException;
 import com.server.watermelonserverv1.global.security.JwtProvider;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -148,5 +150,12 @@ public class AuthService {
     public String passwordSwitchPage() {
         String email = securityUtil.getContextInfo().getEmail();
         return jwtProvider.passwordTokenGenerator(email);
+    }
+
+    public void passwordSwitch(String token, String password) {
+        User contextInfo = securityUtil.getContextInfo();
+        Claims claims = jwtProvider.parseToken(token);
+        if (!claims.get("type").equals("PASSWORD")) throw TokenTypeNotMatchedException.EXCEPTION;
+        userRepository.save(contextInfo.updatePassword(passwordEncoder.encode(password)));
     }
 }

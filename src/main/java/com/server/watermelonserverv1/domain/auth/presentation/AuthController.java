@@ -51,4 +51,7 @@ public class AuthController {
 
     @GetMapping("/password")
     public String passwordSwitchPage() { return authService.passwordSwitchPage(); }
+
+    @PostMapping("/password")
+    public void passwordSwitch(@RequestHeader String passwordToken, @RequestBody String password) { authService.passwordSwitch(passwordToken, password); }
 }
