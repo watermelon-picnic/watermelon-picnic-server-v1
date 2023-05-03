@@ -33,10 +33,10 @@ public class AuthController {
     public void logout() { authService.logout(); }
 
     // this api will erase
-    @GetMapping("/verification-email")
+    @GetMapping("/email/verification")
     public void validationEmail(@RequestHeader String email) { authService.validationEmail(email); }
 
-    @GetMapping("/transmission-email")
+    @GetMapping("/email/transmission")
     public String sendEmail(@RequestHeader String email) { return authService.emailSender(email); }
 
     @GetMapping("/nickname/{nickname}")
