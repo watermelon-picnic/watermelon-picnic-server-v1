@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,24 +33,12 @@ public class AuthController {
     public void logout() { authService.logout(); }
 
     // this api will erase
-    @GetMapping("/verification-email")
+    @GetMapping("/email/verification")
     public void validationEmail(@RequestHeader String email) { authService.validationEmail(email); }
 
-    @GetMapping("/transmission-email")
+    @GetMapping("/email/transmission")
     public String sendEmail(@RequestHeader String email) { return authService.emailSender(email); }
 
     @GetMapping("/nickname/{nickname}")
     public boolean isNicknameExist(@PathVariable String nickname) { return authService.isNicknameExist(nickname); }
-    //
-    @PutMapping("/reissue")
-    public TokenResponse reissue() { return authService.reissue(); }
-
-    @GetMapping("/mail/password")
-    public void sendToChangePassword() { authService.sendToChangePassword(); }
-
-    @GetMapping("/password")
-    public String passwordSwitchPage() { return authService.passwordSwitchPage(); }
-
-    @PostMapping("/password")
-    public void passwordSwitch(@RequestHeader String passwordToken, @RequestBody String password) { authService.passwordSwitch(passwordToken, password); }
 }
