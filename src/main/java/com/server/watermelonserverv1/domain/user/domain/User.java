@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.AttributeOverride;
@@ -52,6 +53,7 @@ public class User extends BasedIdEntity {
     @Column(nullable = false)
     private Date birth;
 
+    @Setter
     @ManyToOne(targetEntity = Region.class)
     @JoinColumn(name = "region_id")
     private Region region;
