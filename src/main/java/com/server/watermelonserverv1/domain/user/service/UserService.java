@@ -7,6 +7,7 @@ import com.server.watermelonserverv1.domain.auth.exception.TokenTypeNotMatchedEx
 import com.server.watermelonserverv1.domain.auth.presentation.dto.response.TokenResponse;
 import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.domain.user.domain.repository.UserRepository;
+import com.server.watermelonserverv1.domain.user.presentation.dto.response.MyInfoResponse;
 import com.server.watermelonserverv1.global.exception.TokenNotFoundException;
 import com.server.watermelonserverv1.global.security.JwtProvider;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
@@ -72,5 +73,15 @@ public class UserService {
         Claims claims = jwtProvider.parseToken(token);
         if (!claims.get("type").equals("PASSWORD")) throw TokenTypeNotMatchedException.EXCEPTION;
         userRepository.save(contextInfo.updatePassword(passwordEncoder.encode(password)));
+    }
+
+    public MyInfoResponse myPage() {
+        User contextInfo = securityUtil.getContextInfo();
+        return MyInfoResponse.builder()
+                .email(contextInfo.getEmail())
+                .nickname(contextInfo.getNickname())
+                .birth(contextInfo.getBirth().toString())
+                .region(contextInfo.getRegion().getRegionName())
+                .build();
     }
 }

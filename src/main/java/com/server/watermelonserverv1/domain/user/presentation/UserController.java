@@ -1,6 +1,7 @@
 package com.server.watermelonserverv1.domain.user.presentation;
 
 import com.server.watermelonserverv1.domain.auth.presentation.dto.response.TokenResponse;
+import com.server.watermelonserverv1.domain.user.presentation.dto.response.MyInfoResponse;
 import com.server.watermelonserverv1.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,4 +30,7 @@ public class UserController {
 
     @PostMapping("/password")
     public void passwordSwitch(@RequestHeader String passwordToken, @RequestBody String password) { userService.passwordSwitch(passwordToken, password); }
+
+    @GetMapping("/my-page")
+    public MyInfoResponse myPage() { return userService.myPage(); }
 }
