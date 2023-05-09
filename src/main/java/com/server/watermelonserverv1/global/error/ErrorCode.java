@@ -14,7 +14,8 @@ public enum ErrorCode {
     BIRTH_BAD_REQUEST("잘못된 생년월일입니다.", 400),
     EMAIL_NOT_MATCHED_REQUIREMENT("email 이 요구사항과 맞지 않습니다.", 400),
     EMAIL_CONFLICT("email 전송 중 충돌이 발생했습니다.",409),
-    TOKEN_TYPE_NOT_MATCHED("입력받은 토큰으로 인가되지 않았습니다.", 403);
+    TOKEN_TYPE_NOT_MATCHED("입력받은 토큰으로 인가되지 않았습니다.", 403),
+    NICKNAME_BAD_REQUEST("유효한 닉네임으로 요청하시오.", 400);
 
     private final String message;
     private final int statusCode;
