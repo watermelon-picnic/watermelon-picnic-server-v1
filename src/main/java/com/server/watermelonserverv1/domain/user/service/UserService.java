@@ -9,6 +9,7 @@ import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.domain.user.domain.repository.UserRepository;
 import com.server.watermelonserverv1.domain.user.presentation.dto.response.MyInfoResponse;
 import com.server.watermelonserverv1.global.exception.TokenNotFoundException;
+import com.server.watermelonserverv1.global.exception.UserNotFoundException;
 import com.server.watermelonserverv1.global.security.JwtProvider;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
 import io.jsonwebtoken.Claims;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 @RequiredArgsConstructor
 @Service
@@ -37,8 +40,10 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public TokenResponse reissue() {
-        User contextInfo = securityUtil.getContextInfo();
+    public TokenResponse reissue(String refresh) {
+        Claims claims = jwtProvider.parseToken(refresh);
+        User contextInfo = userRepository.findByEmail(claims.getSubject())
+                .orElseThrow(()-> UserNotFoundException.EXCEPTION);
         String token = refreshRepository.findById(contextInfo.getId())
                 .orElseThrow(()-> TokenNotFoundException.EXCEPTION).getToken();
         if (jwtProvider.tokenExpired(token)) throw TokenExpiredException.EXCEPTION;
@@ -77,11 +82,12 @@ public class UserService {
 
     public MyInfoResponse myPage() {
         User contextInfo = securityUtil.getContextInfo();
+        DateFormat format = new SimpleDateFormat("yyMMdd");
         return MyInfoResponse.builder()
                 .email(contextInfo.getEmail())
                 .nickname(contextInfo.getNickname())
-                .birth(contextInfo.getBirth().toString())
-                .region(contextInfo.getRegion().getRegionName())
+                .birth(format.format(contextInfo.getBirth()))
+                .region((contextInfo.getRegion() != null) && (contextInfo.getRegion().getRegionName() != null) ? (contextInfo.getRegion().getRegionName()) :("지역정보가 없습니다."))
                 .build();
     }
 }

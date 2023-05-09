@@ -9,6 +9,7 @@ import com.server.watermelonserverv1.domain.auth.exception.EmailBadRequestExcept
 import com.server.watermelonserverv1.domain.auth.exception.ExistEmailException;
 import com.server.watermelonserverv1.domain.auth.exception.ExistNicknameException;
 import com.server.watermelonserverv1.domain.auth.exception.MessageConfigException;
+import com.server.watermelonserverv1.domain.auth.exception.NickNameBadRequestException;
 import com.server.watermelonserverv1.domain.auth.exception.PasswordIncorrectException;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.request.LoginRequest;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.request.SignUpRequest;
@@ -115,6 +116,7 @@ public class AuthService {
     }
 
     public boolean isNicknameExist(String nickname) {
+        if (nickname == null || nickname.isEmpty()) throw NickNameBadRequestException.EXCEPTION;
         return userRepository.findByNickname(nickname).isPresent();
     }
 }

@@ -29,8 +29,7 @@ public class SignUpRequest {
 
     @NotBlank(message = "please insert any value in password request")
     @Size(min = 8, max = 20, message = "please follow password size(8~20) requirement")
-    @Pattern(regexp = "(?=.*[a-z])(?=.*[0-9])(?=.*[!#$%&'()*+,./:;<=>?@＼^_`{|}~])[a-zA-Z0-9!#$%&'()*+,./:;" +
-            "<=>?@＼^_`{|}~]{8,20}$",
+    @Pattern(regexp = "(?=.*[a-z])(?=.*[0-9])(?=.*[!#$%&'()*+,./:;<=>?@＼^_`{|}~])[a-zA-Z0-9!#$%&'()*+,./:;<=>?@＼^_`{|}~]{8,20}$",
             message = "should include small letter, number, special in password")
     private String password;
 }

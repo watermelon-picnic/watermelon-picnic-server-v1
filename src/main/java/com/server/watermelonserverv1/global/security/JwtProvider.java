@@ -51,7 +51,7 @@ public class JwtProvider {
 
     public boolean tokenExpired(String token) {
         Claims tokenClaim = parseToken(token);
-        return tokenClaim.getExpiration().after(new Date());
+        return tokenClaim.getExpiration().before(new Date());
     }
 
     public String accessTokenGenerator(String email) {
