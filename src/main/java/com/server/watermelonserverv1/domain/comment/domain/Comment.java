@@ -30,11 +30,11 @@ public class Comment extends BasedIdEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", nullable = false)
     @ManyToOne
     private Post post;
 
-    @JoinColumn(name = "writer_id")
+    @JoinColumn(name = "writer_id", nullable = false)
     @ManyToOne
     private Writer writer;
 
