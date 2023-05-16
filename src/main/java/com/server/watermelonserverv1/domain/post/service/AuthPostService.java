@@ -1,11 +1,14 @@
 package com.server.watermelonserverv1.domain.post.service;
 
+import com.server.watermelonserverv1.domain.comment.domain.Comment;
+import com.server.watermelonserverv1.domain.comment.domain.repository.CommentRepository;
 import com.server.watermelonserverv1.domain.post.domain.Post;
 import com.server.watermelonserverv1.domain.post.domain.repository.PostRepository;
 import com.server.watermelonserverv1.domain.post.domain.type.PostType;
 import com.server.watermelonserverv1.domain.post.exception.WriterNotFoundException;
 import com.server.watermelonserverv1.domain.post.presentation.dto.request.PostingRequest;
 import com.server.watermelonserverv1.domain.post.presentation.dto.response.PostListResponse;
+import com.server.watermelonserverv1.domain.post.presentation.dto.response.PostingDetailResponse;
 import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.domain.writer.domain.Writer;
 import com.server.watermelonserverv1.domain.writer.domain.repository.WriterRepository;
@@ -16,6 +19,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -27,6 +34,8 @@ public class AuthPostService {
     private final PostRepository postRepository;
 
     private final WriterRepository writerRepository;
+
+    private final CommentRepository commentRepository;
 
     public void postingLocal(PostingRequest request) {
         User contextUser = securityUtil.getContextInfo();
@@ -61,7 +70,7 @@ public class AuthPostService {
 
                         .title(element.getTitle())
 
-                        .nickname(element.getWriter().getName())
+                        .nickname(element.getWriter().getName()) // query********************************
 
                         .introduce(element.getContent().substring(0,
                                 element.getContent().contains(".")
@@ -70,6 +79,27 @@ public class AuthPostService {
                         .photo(element.getImage())
                     .build())
                 .collect(Collectors.toList()))
+                .build();
+    }
+
+    public PostingDetailResponse postDetail(Long id) {
+        Post post = postRepository.findById(id).orElseThrow();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
+        List<Comment> comments = commentRepository.findByPost(post);
+        return PostingDetailResponse.builder()
+                .title(post.getTitle())
+                .name(post.getWriter().getName()) // query********************************
+                .date(dateFormat.format(Date.from(post.getDate())))
+                .content(post.getContent())
+                .photo(post.getImage())
+                .region(post.getRegion().getRegionName()) // query********************************
+                .comments(comments.stream()
+                        .map((element)->PostingDetailResponse.CommentResponse.builder()
+                                .content(element.getContent())
+                                .type(element.getCommentType())
+                                .name(element.getWriter().getName()) // query********************************
+                                .build())
+                        .collect(Collectors.toList()))
                 .build();
     }
 }

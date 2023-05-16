@@ -2,6 +2,7 @@ package com.server.watermelonserverv1.domain.post.presentation;
 
 import com.server.watermelonserverv1.domain.post.presentation.dto.request.PostingRequest;
 import com.server.watermelonserverv1.domain.post.presentation.dto.response.PostListResponse;
+import com.server.watermelonserverv1.domain.post.presentation.dto.response.PostingDetailResponse;
 import com.server.watermelonserverv1.domain.post.service.AuthPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -30,4 +31,7 @@ public class AuthPostController {
 
     @GetMapping
     public PostListResponse getLocalPosting(@PageableDefault(size = 6) Pageable pageable) { return authPostService.getLocalPosting(pageable); }
+
+    @GetMapping("/{id}")
+    public PostingDetailResponse postDetail(@PathVariable Long id) { return authPostService.postDetail(id); }
 }
