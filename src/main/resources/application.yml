@@ -27,6 +27,7 @@ spring:
 server:
   port: 8080
 token:
+  secret: ${SECRET}
   exp:
-    access: ${ACCESS_TOKEN} # 1800ms * 1000 == 30min
-    refresh : ${REFRESH_TOKEN} # 43200ms * 1000 = 1 week
+    access: ${ACCESS_EXPIRED} # 1800ms * 1000 == 30min
+    refresh : ${REFRES_EXPIRED} # 604800ms * 1000 = 1 week

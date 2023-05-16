@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -27,6 +28,7 @@ import java.time.Instant;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "post_id"))
 @EntityListeners(AuditingEntityListener.class)
+@DynamicInsert
 @Entity
 public class Post extends BasedIdEntity {
 
@@ -36,6 +38,12 @@ public class Post extends BasedIdEntity {
     @ColumnDefault(value = "0")
     @Column(nullable = false)
     private Long view;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    @Column
+    private String image;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 10, nullable = false)
@@ -54,9 +62,11 @@ public class Post extends BasedIdEntity {
     private Region region;
 
     @Builder
-    public Post(String title, Long view, PostType postType, Writer writer, Region region) {
+    public Post(String title, Long view, String content, String image, PostType postType, Writer writer, Region region) {
         this.title = title;
         this.view = view;
+        this.content = content;
+        this.image = image;
         this.postType = postType;
         this.writer = writer;
         this.region = region;
