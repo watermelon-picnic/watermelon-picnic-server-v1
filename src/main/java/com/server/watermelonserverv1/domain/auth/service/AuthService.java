@@ -76,6 +76,7 @@ public class AuthService {
                             .user(savedUser)
                             .ipAddress(null)
                             .writerType(WriterType.USER)
+                            .name(savedUser.getNickname())
                     .build());
         } catch (ParseException e) { throw BirthBadRequestException.EXCEPTION; }
     }

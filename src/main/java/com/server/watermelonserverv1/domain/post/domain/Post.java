@@ -39,6 +39,12 @@ public class Post extends BasedIdEntity {
     @Column(nullable = false)
     private Long view;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    @Column
+    private String image;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 10, nullable = false)
     private PostType postType;
@@ -56,9 +62,11 @@ public class Post extends BasedIdEntity {
     private Region region;
 
     @Builder
-    public Post(String title, Long view, PostType postType, Writer writer, Region region) {
+    public Post(String title, Long view, String content, String image, PostType postType, Writer writer, Region region) {
         this.title = title;
         this.view = view;
+        this.content = content;
+        this.image = image;
         this.postType = postType;
         this.writer = writer;
         this.region = region;

@@ -33,10 +33,14 @@ public class Writer extends BasedIdEntity {
     @Column(nullable = false, length = 10)
     private WriterType type;
 
+    @Column(nullable = false)
+    private String name;
+
     @Builder
-    public Writer(String ipAddress, User user, WriterType writerType) {
+    public Writer(String ipAddress, User user, WriterType writerType, String name) {
         this.ipAddress = ipAddress;
         this.user = user;
         this.type = writerType;
+        this.name = name;
     }
 }
