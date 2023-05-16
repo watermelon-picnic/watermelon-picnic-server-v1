@@ -17,6 +17,9 @@ import com.server.watermelonserverv1.domain.auth.presentation.dto.response.Token
 import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.domain.user.domain.repository.UserRepository;
 import com.server.watermelonserverv1.domain.user.domain.type.Role;
+import com.server.watermelonserverv1.domain.writer.domain.Writer;
+import com.server.watermelonserverv1.domain.writer.domain.repository.WriterRepository;
+import com.server.watermelonserverv1.domain.writer.domain.type.WriterType;
 import com.server.watermelonserverv1.global.exception.TokenNotFoundException;
 import com.server.watermelonserverv1.global.exception.UserNotFoundException;
 import com.server.watermelonserverv1.global.security.JwtProvider;
@@ -53,6 +56,8 @@ public class AuthService {
 
     private final AuthCodeRepository authCodeRepository;
 
+    private final WriterRepository writerRepository;
+
     public void signUp(SignUpRequest request) {
         User dbInfo = userRepository.findByEmail(request.getEmail()).orElse(null);
         if (dbInfo != null) throw ExistEmailException.EXCEPTION;
@@ -60,13 +65,17 @@ public class AuthService {
         if (dbInfo != null) throw ExistNicknameException.EXCEPTION;
         DateFormat format = new SimpleDateFormat("yyMMdd");
         try {
-
-            userRepository.save(User.builder()
+            User savedUser = userRepository.save(User.builder()
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role(Role.USER)
                     .nickname(request.getNickname())
                     .birth(format.parse(request.getBirth()))
+                    .build());
+            writerRepository.save(Writer.builder()
+                            .user(savedUser)
+                            .ipAddress(null)
+                            .writerType(WriterType.USER)
                     .build());
         } catch (ParseException e) { throw BirthBadRequestException.EXCEPTION; }
     }
