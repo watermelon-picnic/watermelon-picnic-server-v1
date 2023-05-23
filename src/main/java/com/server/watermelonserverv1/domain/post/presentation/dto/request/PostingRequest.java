@@ -14,4 +14,9 @@ public class PostingRequest {
     private String content;
 
     private String image;
+
+    // anonymous writer only
+    private String region;
+
+    private String name;
 }

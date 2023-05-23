@@ -26,8 +26,5 @@ public class Region extends BasedIdEntity {
     @Column(nullable = false, length = 60, name = "region_name")
     private String regionName;
 
-
-    public Region(String regionName) {
-        this.regionName = regionName;
-    }
+    public Region(String regionName) { this.regionName = regionName; }
 }

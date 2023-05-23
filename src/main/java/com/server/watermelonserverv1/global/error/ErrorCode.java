@@ -16,7 +16,8 @@ public enum ErrorCode {
     EMAIL_CONFLICT("email 전송 중 충돌이 발생했습니다.",409),
     TOKEN_TYPE_NOT_MATCHED("입력받은 토큰으로 인가되지 않았습니다.", 403),
     NICKNAME_BAD_REQUEST("유효한 닉네임으로 요청하시오.", 400),
-    WRITER_NOT_FOUND("작성자로 등록되지 않았습니다.", 404);
+    WRITER_NOT_FOUND("작성자로 등록되지 않았습니다.", 404),
+    POST_NOT_FOUND("게시물을 찾을 수 없습니다.", 404);
 
     private final String message;
     private final int statusCode;

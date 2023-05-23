@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -35,7 +36,12 @@ public class JwtProvider {
     private final DetailsService detailsService;
 
 //    private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(Secret));
+    private SecretKey key;
+
+    @PostConstruct
+    public void init() {
+        key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(Secret));
+    }
 
     private final RefreshRepository refreshRepository;
 
@@ -73,7 +79,8 @@ public class JwtProvider {
                             .id(user.getId())
                             .token(token)
                             .timeToLive(refreshExp)
-                    .build());
+                    .build()
+        );
         return token;
     }
 
