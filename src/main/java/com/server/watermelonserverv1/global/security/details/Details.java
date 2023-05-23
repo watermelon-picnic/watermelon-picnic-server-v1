@@ -19,41 +19,28 @@ public class Details implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
+        if (getUser() != null) authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
+        else authorities.add(new SimpleGrantedAuthority("anonymous"));
         return authorities;
     }
 
     @Override
-    public String getPassword() {
-        return null;
-    }
+    public String getPassword() { return null; }
 
     @Override
-    public String getUsername() {
-        return user.getEmail();
-    }
+    public String getUsername() { return getUser() != null ? user.getEmail() : null; }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isEnabled() { return true; }
 
-    public Details(User user) {
-        this.user = user;
-    }
+    public Details(User user) { this.user = user; }
 }

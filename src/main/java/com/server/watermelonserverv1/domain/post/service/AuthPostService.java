@@ -5,6 +5,7 @@ import com.server.watermelonserverv1.domain.comment.domain.repository.CommentRep
 import com.server.watermelonserverv1.domain.post.domain.Post;
 import com.server.watermelonserverv1.domain.post.domain.repository.PostRepository;
 import com.server.watermelonserverv1.domain.post.domain.type.PostType;
+import com.server.watermelonserverv1.domain.post.exception.PostIdNotFoundException;
 import com.server.watermelonserverv1.domain.post.exception.WriterNotFoundException;
 import com.server.watermelonserverv1.domain.post.presentation.dto.request.PostingRequest;
 import com.server.watermelonserverv1.domain.post.presentation.dto.response.PostListResponse;
@@ -83,7 +84,8 @@ public class AuthPostService {
     }
 
     public PostingDetailResponse postDetail(Long id) {
-        Post post = postRepository.findById(id).orElseThrow();
+        Post post = postRepository.findByIdAndPostType(id, PostType.LOCAL)
+                .orElseThrow(()-> PostIdNotFoundException.EXCEPTION);
         DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
         List<Comment> comments = commentRepository.findByPost(post);
         return PostingDetailResponse.builder()

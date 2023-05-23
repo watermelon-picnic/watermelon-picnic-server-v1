@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface WriterRepository extends CrudRepository<Writer, Long> {
 
     Optional<Writer> findByUser(User user);
+    Optional<Writer> findByIpAddress(String ipAddress);
 }

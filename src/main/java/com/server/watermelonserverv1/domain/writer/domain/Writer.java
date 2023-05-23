@@ -22,7 +22,7 @@ import javax.persistence.OneToOne;
 @Entity
 public class Writer extends BasedIdEntity {
 
-    @Column(name = "ip_address", length = 35)
+    @Column(name = "ip_address", length = 45)
     private String ipAddress;
 
     @OneToOne(targetEntity = User.class)

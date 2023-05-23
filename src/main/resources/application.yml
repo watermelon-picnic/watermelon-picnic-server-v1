@@ -30,4 +30,4 @@ token:
   secret: ${SECRET}
   exp:
     access: ${ACCESS_EXPIRED} # 1800ms * 1000 == 30min
-    refresh : ${REFRES_EXPIRED} # 604800ms * 1000 = 1 week
+    refresh : ${REFRESH_EXPIRED} # 604800ms * 1000 = 1 week
