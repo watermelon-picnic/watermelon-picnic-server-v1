@@ -43,6 +43,8 @@ public class MainPageService {
                                 .introduce(ResponseUtil.makeIntro(e.getContent()))
                                 .writerName(e.getWriter().getName())
                                 .image(e.getImage())
+                                .type(e.getPostType())
+                                .id(e.getId())
                                 .build()
                 ).collect(Collectors.toList()))
                 .variableTravelRegion(
@@ -52,6 +54,8 @@ public class MainPageService {
                                 .content(ResponseUtil.makeIntro(e.getContent()))
                                 .title(e.getTitle())
                                 .image(e.getImage())
+                                .type(e.getPostType())
+                                .id(e.getId())
                                 .build()
                 ).collect(Collectors.toList()))
                 .build();

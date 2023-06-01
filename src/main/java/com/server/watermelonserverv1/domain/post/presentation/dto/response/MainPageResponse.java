@@ -1,5 +1,6 @@
 package com.server.watermelonserverv1.domain.post.presentation.dto.response;
 
+import com.server.watermelonserverv1.domain.post.domain.type.PostType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class MainPageResponse {
         private String image;
 
         private String introduce;
+
     }
 
     @Getter
@@ -41,6 +43,11 @@ public class MainPageResponse {
         private String writerName;
 
         private String image;
+
+        private PostType type;
+
+        private Long id;
+
     }
 
     @Getter
@@ -53,6 +60,10 @@ public class MainPageResponse {
         private String title;
 
         private String content;
+
+        private PostType type;
+
+        private Long id;
 
     }
 }

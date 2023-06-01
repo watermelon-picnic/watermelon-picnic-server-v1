@@ -17,6 +17,7 @@ import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.domain.writer.domain.Writer;
 import com.server.watermelonserverv1.domain.writer.domain.repository.WriterRepository;
 import com.server.watermelonserverv1.domain.writer.domain.type.WriterType;
+import com.server.watermelonserverv1.global.utils.ResponseUtil;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
 import com.server.watermelonserverv1.infrastructure.aws.S3Util;
 import lombok.RequiredArgsConstructor;
@@ -79,15 +80,9 @@ public class AuthPostService {
                 .totalPage(posts.getTotalPages())
                 .posts(posts.stream().map((element)-> PostListResponse.PostResponse.builder()
                         .id(element.getId())
-
                         .title(element.getTitle())
-
                         .nickname(element.getWriter().getName()) // query********************************
-
-                        .introduce(element.getContent().substring(0,
-                                element.getContent().contains(".")
-                                        ? element.getContent().indexOf(".") : element.getContent().length()-1))
-
+                        .introduce(ResponseUtil.makeIntro(element.getContent()))
                         .photo(element.getImage())
                     .build())
                 .collect(Collectors.toList()))
