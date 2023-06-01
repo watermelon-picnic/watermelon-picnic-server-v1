@@ -39,7 +39,7 @@ public class Post extends BasedIdEntity {
     @Column(nullable = false)
     private Long view;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, length = 1000)
     private String content;
 
     @Column
@@ -61,8 +61,17 @@ public class Post extends BasedIdEntity {
     @JoinColumn(name = "region_id", nullable = false)
     private Region region;
 
+    @Column(name = "password_for_shared", length = 1023)
+    private String password;
+
+    public Post updateInfo(String title, String content, String image) {
+        this.title = title;
+        this.content = content;
+        this.image = image;
+        return this;
+    }
     @Builder
-    public Post(String title, Long view, String content, String image, PostType postType, Writer writer, Region region) {
+    public Post(String title, Long view, String content, String image, PostType postType, Writer writer, Region region, String password) {
         this.title = title;
         this.view = view;
         this.content = content;
@@ -70,5 +79,6 @@ public class Post extends BasedIdEntity {
         this.postType = postType;
         this.writer = writer;
         this.region = region;
+        this.password = password;
     }
 }

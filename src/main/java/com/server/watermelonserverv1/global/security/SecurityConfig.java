@@ -53,27 +53,34 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         // "/auth"
                         .antMatchers(HttpMethod.DELETE, "/auth/logout")
-                        .hasAnyAuthority("USER", "ADMIN")
+                        .authenticated()
 
                         // "/user"
                         .antMatchers(HttpMethod.GET, "/user/my-page")
-                        .hasAnyAuthority("USER", "ADMIN")
+                        .authenticated()
                         .antMatchers(HttpMethod.GET, "/user/mail/password")
-                        .hasAnyAuthority("USER", "ADMIN")
+                        .authenticated()
                         .antMatchers(HttpMethod.GET, "/user/password")
-                        .hasAnyAuthority("USER", "ADMIN")
+                        .authenticated()
                         .antMatchers(HttpMethod.PUT, "/user/password")
-                        .hasAnyAuthority("USER", "ADMIN")
+                        .authenticated()
                         .antMatchers(HttpMethod.PUT, "/user/reissue")
-                        .hasAnyAuthority("USER", "ADMIN")
+                        .authenticated()
 
                         // "/post/anonymous"
-                        .antMatchers(HttpMethod.POST, "/post/anonymous/posting")
-                        .hasAnyAuthority("USER", "ADMIN", "anonymous") // must change hasAuthority()
+//                        .antMatchers(HttpMethod.POST, "/post/anonymous/posting")
+//                        .hasAnyAuthority("USER", "ADMIN", "anonymous") // must change hasAuthority()
+//                        .antMatchers(HttpMethod.POST, "/post/anonymous/upload")
+//                        .hasAnyAuthority("USER", "ADMIN", "anonymous")
 
                         // "/post/auth"
                         .antMatchers(HttpMethod.POST, "/post/auth/posting")
-                        .hasAnyAuthority("USER", "ADMIN")
+                        .authenticated()
+
+
+                        // "/region"
+                        .antMatchers(HttpMethod.POST, "/region/setting/{region}")
+                        .hasAuthority("ADMIN")
 
                         .anyRequest().denyAll()
                 )
@@ -98,6 +105,7 @@ public class SecurityConfig {
                 // "/post/anonymous"
                 .antMatchers(HttpMethod.GET, "/post/anonymous")
                 .antMatchers(HttpMethod.GET, "/post/anonymous/{id}")
+                .antMatchers(HttpMethod.POST, "/post/anonymous/posting")
 
                 // "/post/auth"
                 .antMatchers(HttpMethod.GET, "/post/auth")
@@ -105,6 +113,8 @@ public class SecurityConfig {
 
                 // "/region"
                 .antMatchers(HttpMethod.PUT, "/region")
+
+                .antMatchers(HttpMethod.GET, "/main-page")
         ;
     }
 }

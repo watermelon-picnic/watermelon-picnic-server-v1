@@ -17,7 +17,10 @@ public enum ErrorCode {
     TOKEN_TYPE_NOT_MATCHED("입력받은 토큰으로 인가되지 않았습니다.", 403),
     NICKNAME_BAD_REQUEST("유효한 닉네임으로 요청하시오.", 400),
     WRITER_NOT_FOUND("작성자로 등록되지 않았습니다.", 404),
-    POST_NOT_FOUND("게시물을 찾을 수 없습니다.", 404);
+    POST_NOT_FOUND("게시물을 찾을 수 없습니다.", 404),
+    IMAGE_NOT_FOUND_EXCEPTION("사진이 저장되지 않았습니다.", 409),
+    IMAGE_BAD_REQUEST_EXCEPTION("사진 요청형식이 알맞지 않습니다.", 415),
+    REGION_NOT_FOUND_EXCEPTION("요청한 지역의 정보를 찾을 수 없습니다.", 404);
 
     private final String message;
     private final int statusCode;

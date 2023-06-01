@@ -8,17 +8,22 @@ import com.server.watermelonserverv1.domain.post.domain.type.PostType;
 import com.server.watermelonserverv1.domain.post.exception.PostIdNotFoundException;
 import com.server.watermelonserverv1.domain.post.exception.WriterNotFoundException;
 import com.server.watermelonserverv1.domain.post.presentation.dto.request.PostingRequest;
+import com.server.watermelonserverv1.domain.post.presentation.dto.request.PostingUpdateRequest;
 import com.server.watermelonserverv1.domain.post.presentation.dto.response.PostListResponse;
 import com.server.watermelonserverv1.domain.post.presentation.dto.response.PostingDetailResponse;
+import com.server.watermelonserverv1.domain.region.domain.Region;
+import com.server.watermelonserverv1.domain.region.domain.repository.RegionRepository;
 import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.domain.writer.domain.Writer;
 import com.server.watermelonserverv1.domain.writer.domain.repository.WriterRepository;
 import com.server.watermelonserverv1.domain.writer.domain.type.WriterType;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
+import com.server.watermelonserverv1.infrastructure.aws.S3Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,8 +43,13 @@ public class AuthPostService {
 
     private final CommentRepository commentRepository;
 
-    public void postingLocal(PostingRequest request) {
+    private final RegionRepository regionRepository;
+
+    private final S3Util s3Util;
+
+    public void postingLocal(MultipartFile file, PostingRequest request) {
         User contextUser = securityUtil.getContextInfo();
+        String path = s3Util.uploadImage(file, "image");
         try {
             Writer writer = writerRepository.findByUser(contextUser).orElseThrow(RuntimeException::new);
             postRepository.save(Post.builder()
@@ -49,7 +59,7 @@ public class AuthPostService {
                     .view(null) // default value 0 is automatically insert in query
                     .writer(writer)
                     .content(request.getContent())
-                    .image(request.getImage())
+                    .image(path)
                     .build());
         } catch (RuntimeException e) {
             writerRepository.save(Writer.builder()
@@ -64,6 +74,7 @@ public class AuthPostService {
 
     public PostListResponse getLocalPosting(Pageable pageable) {
         Page<Post> posts = postRepository.findByPostType(PostType.LOCAL, pageable);
+        List<Region> regions = (List<Region>) regionRepository.findAll();
         return PostListResponse.builder()
                 .totalPage(posts.getTotalPages())
                 .posts(posts.stream().map((element)-> PostListResponse.PostResponse.builder()
@@ -80,6 +91,7 @@ public class AuthPostService {
                         .photo(element.getImage())
                     .build())
                 .collect(Collectors.toList()))
+                .regions(regions.stream().map(Region::getRegionName).collect(Collectors.toList()))
                 .build();
     }
 
@@ -103,5 +115,10 @@ public class AuthPostService {
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    public void updatePost(PostingUpdateRequest request, Long id) {
+        Post post = postRepository.findById(id).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
+        postRepository.save(post.updateInfo(request.getTitle(), request.getContent(), request.getImage()));
     }
 }

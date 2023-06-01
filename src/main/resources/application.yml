@@ -24,6 +24,23 @@ spring:
           auth: true
           starttls:
             enable: true
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE}
+      max-request-size: ${MAX_REQUEST_SIZE}
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET}
+      url: ${S3_URL}
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}
+    region:
+      static: ${REGION}
+      auto: false
+    stack:
+      auto: false
 server:
   port: 8080
 token:

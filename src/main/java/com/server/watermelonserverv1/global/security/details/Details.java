@@ -19,8 +19,8 @@ public class Details implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        if (getUser() != null) authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
-        else authorities.add(new SimpleGrantedAuthority("anonymous"));
+        /*if (getUser() != null) */authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
+        // else authorities.add(new SimpleGrantedAuthority("anonymous"));
         return authorities;
     }
 

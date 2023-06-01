@@ -27,7 +27,7 @@ public class Comment extends BasedIdEntity {
     @Column(name = "comment_type", nullable = false, length = 15)
     private CommentType commentType;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, length = 200)
     private String content;
 
     @JoinColumn(name = "post_id", nullable = false)

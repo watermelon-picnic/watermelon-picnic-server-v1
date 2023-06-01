@@ -30,6 +30,7 @@ public class SecurityUtil {
         return ip;
     }
 
+    @Deprecated
     public List<String> getAuthorities() {
         List<? extends GrantedAuthority> authorities = new ArrayList<>(SecurityContextHolder.getContext()
                 .getAuthentication().getAuthorities());

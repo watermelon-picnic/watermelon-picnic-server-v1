@@ -15,6 +15,8 @@ public class PostListResponse {
 
     private List<PostResponse> posts;
 
+    private List<String> regions;
+
     @Getter @AllArgsConstructor @Builder
     public static class PostResponse {
         private Long id;

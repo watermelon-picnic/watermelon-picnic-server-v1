@@ -5,18 +5,16 @@ import lombok.Getter;
 import javax.validation.constraints.NotEmpty;
 
 @Getter
-public class PostingRequest {
+public class PostingUpdateRequest {
 
-    @NotEmpty(message = "please insert any value in title")
+    @NotEmpty
     private String title;
 
-    @NotEmpty(message = "please insert any value in content")
+    @NotEmpty
     private String content;
 
-    // anonymous writer only
-    private String region;
-
-    private String name;
+    @NotEmpty
+    private String image;
 
     private String password;
 }

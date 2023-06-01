@@ -4,7 +4,6 @@ import com.server.watermelonserverv1.global.entity.BasedIdEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,5 +25,24 @@ public class Region extends BasedIdEntity {
     @Column(nullable = false, length = 60, name = "region_name")
     private String regionName;
 
-    public Region(String regionName) { this.regionName = regionName; }
+    @Column(length = 1023)
+    private String introduce;
+
+
+    private String image;
+
+    public Region updateIntroduce(String introduce) {
+        this.introduce = introduce;
+        return this;
+    }
+
+    public Region updateImage(String image) {
+        this.image = image;
+        return this;
+    }
+
+    public Region(String regionName, String introduce) {
+        this.regionName = regionName;
+        this.introduce = introduce;
+    }
 }
