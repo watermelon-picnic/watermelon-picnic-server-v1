@@ -7,6 +7,7 @@ import com.server.watermelonserverv1.domain.post.domain.repository.PostRepositor
 import com.server.watermelonserverv1.domain.post.domain.type.PostType;
 import com.server.watermelonserverv1.domain.post.exception.PostIdNotFoundException;
 import com.server.watermelonserverv1.domain.post.exception.WriterNotFoundException;
+import com.server.watermelonserverv1.domain.post.exception.WriterPostIncorrectException;
 import com.server.watermelonserverv1.domain.post.presentation.dto.request.PostingRequest;
 import com.server.watermelonserverv1.domain.post.presentation.dto.request.PostingUpdateRequest;
 import com.server.watermelonserverv1.domain.post.presentation.dto.response.PostListResponse;
@@ -113,7 +114,16 @@ public class AuthPostService {
     }
 
     public void updatePost(PostingUpdateRequest request, Long id) {
-        Post post = postRepository.findById(id).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
+        Post post = postRepository.findByIdAndPostType(id, PostType.LOCAL).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
+        User contextInfo = securityUtil.getContextInfo();
+        if (!post.getWriter().getUser().getId().equals(contextInfo.getId())) throw WriterPostIncorrectException.EXCEPTION;
         postRepository.save(post.updateInfo(request.getTitle(), request.getContent(), request.getImage()));
+    }
+
+    public void deletePost(Long id) {
+        User contextInfo = securityUtil.getContextInfo();
+        Post post = postRepository.findByIdAndPostType(id, PostType.LOCAL).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
+        if (!post.getWriter().getUser().getId().equals(contextInfo.getId())) throw WriterPostIncorrectException.EXCEPTION;
+        postRepository.delete(post);
     }
 }

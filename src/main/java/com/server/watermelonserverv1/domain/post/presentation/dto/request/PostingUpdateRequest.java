@@ -13,7 +13,6 @@ public class PostingUpdateRequest {
     @NotEmpty
     private String content;
 
-    @NotEmpty
     private String image;
 
     private String password;

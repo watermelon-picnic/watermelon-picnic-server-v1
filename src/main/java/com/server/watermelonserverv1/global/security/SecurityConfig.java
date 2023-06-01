@@ -25,24 +25,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception{
-//        http
-//                .csrf().disable()
-//                .formLogin().disable()
-//                .httpBasic().disable()
-//                .cors()
-//                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authorizeRequests()
-//
-//                .anyRequest().authenticated()
-//                .and()
-//                .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
-//                .build();
-//    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -67,16 +49,13 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.PUT, "/user/reissue")
                         .authenticated()
 
-                        // "/post/anonymous"
-//                        .antMatchers(HttpMethod.POST, "/post/anonymous/posting")
-//                        .hasAnyAuthority("USER", "ADMIN", "anonymous") // must change hasAuthority()
-//                        .antMatchers(HttpMethod.POST, "/post/anonymous/upload")
-//                        .hasAnyAuthority("USER", "ADMIN", "anonymous")
-
                         // "/post/auth"
                         .antMatchers(HttpMethod.POST, "/post/auth/posting")
                         .authenticated()
-
+                        .antMatchers(HttpMethod.PUT, "/post/auth/{id}")
+                        .authenticated()
+                        .antMatchers(HttpMethod.DELETE, "/post/auth/{id}")
+                        .authenticated()
 
                         // "/region"
                         .antMatchers(HttpMethod.POST, "/region/setting/{region}")
@@ -106,6 +85,8 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/post/anonymous")
                 .antMatchers(HttpMethod.GET, "/post/anonymous/{id}")
                 .antMatchers(HttpMethod.POST, "/post/anonymous/posting")
+                .antMatchers(HttpMethod.PUT, "/post/anonymous/{id}")
+                .antMatchers(HttpMethod.DELETE, "/post/anonymous/{id}")
 
                 // "/post/auth"
                 .antMatchers(HttpMethod.GET, "/post/auth")

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,9 +37,16 @@ public class AuthPostController {
     @GetMapping
     public PostListResponse getLocalPosting(@PageableDefault(size = 6) Pageable pageable) { return authPostService.getLocalPosting(pageable); }
 
+    // region 이름 별로 로컬 게시글 목록 반환 api
+
     @GetMapping("/{id}")
     public PostingDetailResponse postDetail(@PathVariable Long id) { return authPostService.postDetail(id); }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
     public void updatePosting(@PathVariable Long id, @Valid @RequestBody PostingUpdateRequest request) { authPostService.updatePost(request, id); }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void deletePost(@PathVariable Long id) { authPostService.deletePost(id); }
 }

@@ -132,30 +132,14 @@ public class AnonymousPostService {
     }
 
     public void updatePost(PostingUpdateRequest request, Long id) {
-        Post post = postRepository.findById(id).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
-        if (!passwordEncoder.matches(request.getPassword(), post.getPassword())) { throw PasswordIncorrectException.EXCEPTION; }
+        Post post = postRepository.findByIdAndPostType(id, PostType.SHARE).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
+        if (!passwordEncoder.matches(request.getPassword(), post.getPassword()))  throw PasswordIncorrectException.EXCEPTION;
         postRepository.save(post.updateInfo(request.getTitle(), request.getContent(), request.getImage()));
     }
 
-//    public String uploadImage(MultipartFile file, PostingRequest request) {
-//        String path = s3Util.uploadImage(file, "image");
-//        Region region = regionRepository.findByRegionName(request.getRegion()).orElseThrow(()-> RegionNotFoundException.EXCEPTION);
-//        Writer writer = writerRepository.save(Writer.builder()
-//                .name(request.getName())
-//                .writerType(WriterType.ANONYMOUS)
-//                .ipAddress(null)
-//                .user(null)
-//                .build());
-//        postRepository.save(Post.builder()
-//                        .title(request.getTitle())
-//                        .password(passwordEncoder.encode(request.getPassword()))
-//                        .postType(PostType.SHARE)
-//                        .region(region)
-//                        .view(null)
-//                        .writer(writer)
-//                        .image(path)
-//                        .content(request.getContent())
-//                .build());
-//        return path;
-//    }
+    public void deletePost(String password, Long id) {
+        Post post = postRepository.findByIdAndPostType(id, PostType.SHARE).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
+        if (!passwordEncoder.matches(password, post.getPassword())) throw PasswordIncorrectException.EXCEPTION;
+        postRepository.delete(post);
+    }
 }
