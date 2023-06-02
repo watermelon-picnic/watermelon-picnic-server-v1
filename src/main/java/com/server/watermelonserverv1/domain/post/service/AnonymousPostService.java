@@ -24,6 +24,7 @@ import com.server.watermelonserverv1.infrastructure.aws.S3Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -131,15 +132,21 @@ public class AnonymousPostService {
                 .build();
     }
 
-    public void updatePost(PostingUpdateRequest request, Long id) {
+    public void updatePost(MultipartFile file, PostingUpdateRequest request, Long id) {
         Post post = postRepository.findByIdAndPostType(id, PostType.SHARE).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
+        String newPath = post.getImage();
         if (!passwordEncoder.matches(request.getPassword(), post.getPassword()))  throw PasswordIncorrectException.EXCEPTION;
-        postRepository.save(post.updateInfo(request.getTitle(), request.getContent(), request.getImage()));
+        if (file != null) {
+            s3Util.delete(post.getImage());
+            newPath = s3Util.uploadImage(file, "image");
+        }
+        postRepository.save(post.updateInfo(request.getTitle(), request.getContent(), newPath));
     }
 
     public void deletePost(String password, Long id) {
         Post post = postRepository.findByIdAndPostType(id, PostType.SHARE).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
         if (!passwordEncoder.matches(password, post.getPassword())) throw PasswordIncorrectException.EXCEPTION;
+        s3Util.delete(post.getImage());
         postRepository.delete(post);
     }
 }

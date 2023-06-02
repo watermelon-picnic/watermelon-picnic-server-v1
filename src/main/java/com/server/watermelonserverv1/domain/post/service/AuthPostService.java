@@ -113,17 +113,23 @@ public class AuthPostService {
                 .build();
     }
 
-    public void updatePost(PostingUpdateRequest request, Long id) {
+    public void updatePost(PostingUpdateRequest request, Long id, MultipartFile file) {
         Post post = postRepository.findByIdAndPostType(id, PostType.LOCAL).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
         User contextInfo = securityUtil.getContextInfo();
+        String newPath = post.getImage();
         if (!post.getWriter().getUser().getId().equals(contextInfo.getId())) throw WriterPostIncorrectException.EXCEPTION;
-        postRepository.save(post.updateInfo(request.getTitle(), request.getContent(), request.getImage()));
+        if (file != null) {
+            s3Util.delete(post.getImage());
+            newPath = s3Util.uploadImage(file, "image");
+        }
+        postRepository.save(post.updateInfo(request.getTitle(), request.getContent(), newPath));
     }
 
     public void deletePost(Long id) {
         User contextInfo = securityUtil.getContextInfo();
         Post post = postRepository.findByIdAndPostType(id, PostType.LOCAL).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
         if (!post.getWriter().getUser().getId().equals(contextInfo.getId())) throw WriterPostIncorrectException.EXCEPTION;
+        s3Util.delete(post.getImage());
         postRepository.delete(post);
     }
 }

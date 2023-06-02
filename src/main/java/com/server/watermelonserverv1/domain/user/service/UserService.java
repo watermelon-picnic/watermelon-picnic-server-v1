@@ -56,12 +56,11 @@ public class UserService {
 
     @Async
     public void sendToChangePassword(String email) {
-        String contextInfo = securityUtil.getContextInfo().getNickname();
+        // the exception happen reason is @Async annotation makes new thread, the new thread doesn't save Authentication
+//        String contextInfo = securityUtil.getContextInfo().getNickname();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-        String htmlMsg = String.format(
-                "<h3>%s 님! 비밀번호 변경을 원하신다면 다음 링크를 클릭해 주십시오</h3><br/><a href=\"{URL}\">비밀번호 변경하러 가기</a>",
-                contextInfo);
+        String htmlMsg = "<h3>비밀번호 변경을 원하신다면 다음 링크를 클릭해 주십시오</h3><br/><a href=\"{URL}\">비밀번호 변경하러 가기</a>";
         try {
             helper.setTo(email);
             helper.setSubject("수박나들이에서 보냅니다.");

@@ -44,7 +44,12 @@ public class AnonymousPostController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
-    public void updatePost(@RequestBody PostingUpdateRequest request, @PathVariable Long id) { anonymousPostService.updatePost(request, id); }
+    public void updatePost(@RequestPart(value = "file", required = false) MultipartFile file,
+                           @Valid @RequestPart("json-body") PostingUpdateRequest request,
+                           @PathVariable Long id) {
+
+        anonymousPostService.updatePost(file, request, id);
+    }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")

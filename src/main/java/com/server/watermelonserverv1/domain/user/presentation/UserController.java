@@ -29,6 +29,7 @@ public class UserController {
     @PutMapping("/reissue")
     public TokenResponse reissue(@RequestHeader(name = "Refresh") String refresh) { return userService.reissue(refresh); }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/mail/password")
     public void sendToChangePassword(@Valid @RequestBody Email4PWUpdateRequest request) { userService.sendToChangePassword(request.getEmail()); }
 

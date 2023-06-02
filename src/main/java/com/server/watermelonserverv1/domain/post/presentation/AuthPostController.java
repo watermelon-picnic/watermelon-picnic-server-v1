@@ -44,7 +44,12 @@ public class AuthPostController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
-    public void updatePosting(@PathVariable Long id, @Valid @RequestBody PostingUpdateRequest request) { authPostService.updatePost(request, id); }
+    public void updatePosting(@PathVariable Long id,
+                              @Valid @RequestPart("json-body") PostingUpdateRequest request,
+                              @RequestPart(value = "file", required = false) MultipartFile file) {
+
+        authPostService.updatePost(request, id, file);
+    }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")

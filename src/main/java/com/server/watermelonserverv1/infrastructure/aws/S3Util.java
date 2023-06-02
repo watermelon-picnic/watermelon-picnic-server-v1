@@ -26,7 +26,8 @@ public class S3Util {
     private String url;
 
     public void delete(String objectName) {
-        amazonS3.deleteObject(bucket, objectName);
+        if (objectName == null) return;
+        amazonS3.deleteObject(bucket, objectName.replace(url+"/", ""));
     }
 
     public String uploadImage(MultipartFile file, String folderName) {
@@ -40,9 +41,9 @@ public class S3Util {
         return filePath;
     }
 
-    public String getS3ObjectUrl(String path) {
-        return url + "/" + path;
-    }
+//    public String getS3ObjectUrl(String path) {
+//        return url + "/" + path;
+//    }
 
     private String verificationFile(MultipartFile file) {
         if(file == null || file.isEmpty() || file.getOriginalFilename() == null) System.out.println();//throw ImageBadRequestException.EXCEPTION;
