@@ -75,8 +75,8 @@ public class SecurityConfig {
                 .requestMatchers(CorsUtils::isPreFlightRequest)
 
                 // "/auth"
-                .antMatchers(HttpMethod.GET, "/auth/email/verification")
-                .antMatchers(HttpMethod.GET, "/auth/email/transmission")
+//                .antMatchers(HttpMethod.GET, "/auth/email/verification")
+                .antMatchers(HttpMethod.POST, "/auth/email/transmission")
                 .antMatchers(HttpMethod.GET, "/auth/nickname/{nickname}")
                 .antMatchers(HttpMethod.POST, "/auth/sign-up")
                 .antMatchers(HttpMethod.POST, "/auth/login")

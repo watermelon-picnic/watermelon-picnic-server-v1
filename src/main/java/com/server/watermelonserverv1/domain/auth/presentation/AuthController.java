@@ -36,12 +36,13 @@ public class AuthController {
     @DeleteMapping("/logout")
     public void logout() { authService.logout(); }
 
-    // this api will erase
-    @GetMapping("/email/verification")
-    public void validationEmail(@RequestHeader String email) { authService.validationEmail(email); }
 
-    @GetMapping("/email/transmission")
-    public String sendEmail(@RequestHeader String email) { return authService.emailSender(email); }
+    // this api will erase
+//    @GetMapping("/email/verification")
+//    public void validationEmail(@RequestHeader String email) { authService.validationEmail(email); }
+
+    @PostMapping("/email/transmission")
+    public void sendEmail(@RequestHeader String email) { authService.emailSender(email); }
 
     @GetMapping("/nickname/{nickname}")
     public boolean isNicknameExist(@PathVariable String nickname) { return authService.isNicknameExist(nickname); }

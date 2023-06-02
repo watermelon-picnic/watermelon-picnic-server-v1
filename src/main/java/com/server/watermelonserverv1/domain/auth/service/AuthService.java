@@ -27,6 +27,7 @@ import com.server.watermelonserverv1.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -99,15 +100,16 @@ public class AuthService {
         refreshRepository.delete(refresh);
     }
 
-    public void validationEmail(String email) {
+//    public void validationEmail(String email) {
+//
+//    }
+    @Async
+    public void emailSender(String email) {
         if (userRepository.findByEmail(email).isPresent())
             throw ExistEmailException.EXCEPTION;
         Pattern pattern = Pattern.compile("[\\d\\w]+@[\\w]+\\.[\\w]+(.[\\w]+)?");
         Matcher matcher = pattern.matcher(email);
         if (!matcher.matches()) throw EmailBadRequestException.EXCEPTION;
-    }
-
-    public String emailSender(String email) {
         MimeMessage simpleMailMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(simpleMailMessage, "utf-8");
         String randomValue = String.format("%d", (int)Math.floor(Math.random() * (999999 - 100000 + 1) + 100000));
@@ -122,7 +124,6 @@ public class AuthService {
                         .timeToLive(5L)
                 .build());
         javaMailSender.send(simpleMailMessage);
-        return randomValue;
     }
 
     public boolean isNicknameExist(String nickname) {
