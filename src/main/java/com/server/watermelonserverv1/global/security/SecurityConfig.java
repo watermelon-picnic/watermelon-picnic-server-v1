@@ -40,7 +40,7 @@ public class SecurityConfig {
                         // "/user"
                         .antMatchers(HttpMethod.GET, "/user/my-page")
                         .authenticated()
-                        .antMatchers(HttpMethod.GET, "/user/mail/password")
+                        .antMatchers(HttpMethod.POST, "/user/mail/password")
                         .authenticated()
                         .antMatchers(HttpMethod.GET, "/user/password")
                         .authenticated()
