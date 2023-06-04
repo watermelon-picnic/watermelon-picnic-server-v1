@@ -107,8 +107,8 @@ public class AnonymousPostService {
                 .date(dateFormat.format(Date.from(post.getDate())))
                 .comments(comments.stream().map(e->
                         PostingDetailResponse.CommentResponse.builder()
+                                .id(e.getId())
                                 .name(e.getWriter().getName()) // query*******************
-                                .type(e.getCommentType())
                                 .content(e.getContent())
                                 .build()
                 ).collect(Collectors.toList()))

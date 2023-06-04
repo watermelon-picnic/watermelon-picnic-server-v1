@@ -1,6 +1,5 @@
 package com.server.watermelonserverv1.domain.post.presentation.dto.response;
 
-import com.server.watermelonserverv1.domain.comment.domain.type.CommentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,10 +28,10 @@ public class PostingDetailResponse {
     @Getter @AllArgsConstructor @Builder
     public static class CommentResponse {
 
+        private final Long id;
+
         private final String name;
 
         private final String content;
-
-        private final CommentType type;
     }
 }

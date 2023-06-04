@@ -61,6 +61,10 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.POST, "/region/setting/{region}")
                         .hasAuthority("ADMIN")
 
+                        // "/comment"
+                        .antMatchers(HttpMethod.POST, "/comment/{id}")
+                        .permitAll()
+
                         .anyRequest().denyAll()
                 )
                 .addFilterBefore(new JwtFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
@@ -91,12 +95,13 @@ public class SecurityConfig {
 
                 // "/post/auth"
                 .antMatchers(HttpMethod.GET, "/post/auth")
-                .antMatchers(HttpMethod.GET, "/post/auth/{id}")
+                .antMatchers(HttpMethod.GET, "/post/{id}")
                 .antMatchers(HttpMethod.GET, "/post/auth/region")
 
                 // "/region"
                 .antMatchers(HttpMethod.PUT, "/region")
 
+                // "/"
                 .antMatchers(HttpMethod.GET, "/main-page")
         ;
     }

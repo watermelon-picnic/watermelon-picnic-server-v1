@@ -125,8 +125,8 @@ public class AuthPostService {
                 .region(post.getRegion().getRegionName()) // query********************************
                 .comments(comments.stream()
                         .map((element)->PostingDetailResponse.CommentResponse.builder()
+                                .id(element.getId())
                                 .content(element.getContent())
-                                .type(element.getCommentType())
                                 .name(element.getWriter().getName()) // query********************************
                                 .build())
                         .collect(Collectors.toList()))
