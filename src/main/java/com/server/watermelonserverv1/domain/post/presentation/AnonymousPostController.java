@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -31,17 +30,21 @@ public class AnonymousPostController {
 
     private final AnonymousPostService anonymousPostService;
 
+    // GET
     @GetMapping
     public PostListResponse getPage(@PageableDefault Pageable pageable) { return anonymousPostService.getPage(pageable); }
 
-    // region 이름 별로 공유 게시글 목록 반환 api
-
-    @PostMapping("/posting")
-    public void postingShare(@RequestPart("file") MultipartFile file, @Valid @RequestPart("json-body") PostingRequest request) { anonymousPostService.postingShare(file, request); }
+    @GetMapping("/region")
+    public PostListResponse getRegion(@PageableDefault Pageable pageable, @RequestParam("name") String region) { return anonymousPostService.getRegion(pageable, region); }
 
     @GetMapping("/{id}")
     public PostingDetailResponse postDetail(@PathVariable Long id) { return anonymousPostService.postDetail(id); }
 
+    // POST
+    @PostMapping("/posting")
+    public void postingShare(@RequestPart(value = "file", required = false) MultipartFile file, @Valid @RequestPart("json-body") PostingRequest request) { anonymousPostService.postingShare(file, request); }
+
+    // PUT
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
     public void updatePost(@RequestPart(value = "file", required = false) MultipartFile file,
@@ -51,12 +54,8 @@ public class AnonymousPostController {
         anonymousPostService.updatePost(file, request, id);
     }
 
+    // DELETE
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deletePost(@PathVariable Long id, @RequestParam("password") String password) { anonymousPostService.deletePost(password, id); }
-
-//    @PostMapping("/upload")
-//    public String uploadImage(@RequestPart("file") MultipartFile file, @RequestPart("json-body") PostingRequest request) {
-//        return anonymousPostService.uploadImage(file, request);
-//    }
 }

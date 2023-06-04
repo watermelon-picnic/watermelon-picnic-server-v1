@@ -84,6 +84,7 @@ public class SecurityConfig {
                 // "/post/anonymous"
                 .antMatchers(HttpMethod.GET, "/post/anonymous")
                 .antMatchers(HttpMethod.GET, "/post/anonymous/{id}")
+                .antMatchers(HttpMethod.GET, "/post/anonymous/region")
                 .antMatchers(HttpMethod.POST, "/post/anonymous/posting")
                 .antMatchers(HttpMethod.PUT, "/post/anonymous/{id}")
                 .antMatchers(HttpMethod.DELETE, "/post/anonymous/{id}")
@@ -91,6 +92,7 @@ public class SecurityConfig {
                 // "/post/auth"
                 .antMatchers(HttpMethod.GET, "/post/auth")
                 .antMatchers(HttpMethod.GET, "/post/auth/{id}")
+                .antMatchers(HttpMethod.GET, "/post/auth/region")
 
                 // "/region"
                 .antMatchers(HttpMethod.PUT, "/region")

@@ -19,12 +19,12 @@ import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.domain.writer.domain.Writer;
 import com.server.watermelonserverv1.domain.writer.domain.repository.WriterRepository;
 import com.server.watermelonserverv1.domain.writer.domain.type.WriterType;
+import com.server.watermelonserverv1.global.utils.ResponseUtil;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
 import com.server.watermelonserverv1.infrastructure.aws.S3Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,19 +55,16 @@ public class AnonymousPostService {
 
     private final S3Util s3Util;
 
+    // GET
     public PostListResponse getPage(Pageable pageable) {
         Page<Post> posts = postRepository.findByPostType(PostType.SHARE, pageable);
         List<Region> regions = (List<Region>) regionRepository.findAll();
-//        System.out.println(SecurityContextHolder.getContext().getAuthentication());
-//        System.out.println(Arrays.toString(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toArray()));
         return PostListResponse.builder()
                 .totalPage(posts.getTotalPages())
                 .posts(posts.stream().map((element)-> PostListResponse.PostResponse.builder()
                         .id(element.getId())
                         .photo(element.getImage())
-                        .introduce(element.getContent().contains(".")
-                                ? element.getContent().substring(0, element.getContent().indexOf(".")-1)
-                                : element.getContent())
+                        .introduce(ResponseUtil.makeIntro(element.getContent()))
                         .nickname(element.getWriter().getName()) // query*************************
                         .title(element.getTitle())
                         .build()).collect(Collectors.toList()))
@@ -76,38 +72,25 @@ public class AnonymousPostService {
                 .build();
     }
 
-    public void postingShare(MultipartFile file, PostingRequest request) {
-        Writer writer;
-        Region region;
-        String path = s3Util.uploadImage(file, "image");
-        Authentication concurrentThreadAuthentication = SecurityContextHolder.getContext().getAuthentication();
-        if (concurrentThreadAuthentication == null) {
-            if(writerRepository.findByIpAddress(securityUtil.getIp()).isEmpty()) {
-                writerRepository.save(Writer.builder()
-                                .writerType(WriterType.ANONYMOUS)
-                                .ipAddress(securityUtil.getIp())
-                                .user(null)
-                                .name(request.getName())
-                        .build());
-            }
-            String writerName = securityUtil.getIp();
-            writer = writerRepository.findByIpAddress(writerName).orElseThrow(()-> WriterNotFoundException.EXCEPTION); // 대충 사용자 등록해주세요 같은 예외? ////////////////
-            region = regionRepository.findByRegionName(request.getRegion()).orElseThrow(()->RegionNotFoundException.EXCEPTION); // region 없으면 등록해줘 같은 예외 ///////
-        } else {
-            User contextInfo = securityUtil.getContextInfo();
-            writer = writerRepository.findByUser(contextInfo).orElseThrow(()->WriterNotFoundException.EXCEPTION); ////////////////////////////////////////////////////
-            region = contextInfo.getRegion();
-        }
-        postRepository.save(Post.builder()
-                    .title(request.getTitle())
-                    .image(path)
-                    .content(request.getContent())
-                    .writer(writer)
-                    .view(null)
-                    .postType(PostType.SHARE)
-                    .region(region)
-                    .password(passwordEncoder.encode(request.getPassword()))
-                .build());
+    public PostListResponse getRegion(Pageable pageable, String regionName) {
+        Region region = regionRepository.findByRegionName(regionName).orElseThrow(()->RegionNotFoundException.EXCEPTION);
+        List<Region> regions = (List<Region>) regionRepository.findAll();
+        Page<Post> posts = postRepository.findByPostTypeAndRegion(PostType.SHARE, region ,pageable);
+        return PostListResponse.builder()
+                .totalPage(posts.getTotalPages())
+                .regions(regions.stream().map(Region::getRegionName).collect(Collectors.toList()))
+                .posts(
+                        posts.stream().map(
+                                e->PostListResponse.PostResponse.builder()
+                                        .id(e.getId())
+                                        .title(e.getTitle())
+                                        .nickname(e.getWriter().getName())
+                                        .introduce(ResponseUtil.makeIntro(e.getContent()))
+                                        .photo(e.getImage())
+                                        .build()
+                        ).collect(Collectors.toList())
+                )
+                .build();
     }
 
     public PostingDetailResponse postDetail(Long id) {
@@ -132,6 +115,42 @@ public class AnonymousPostService {
                 .build();
     }
 
+    // POST
+    public void postingShare(MultipartFile file, PostingRequest request) {
+        Writer writer;
+        Region region;
+        String path = file == null ? null : s3Util.uploadImage(file, "image");
+        Authentication concurrentThreadAuthentication = SecurityContextHolder.getContext().getAuthentication();
+        if (concurrentThreadAuthentication == null) {
+            if(writerRepository.findByIpAddress(securityUtil.getIp()).isEmpty()) {
+                writerRepository.save(Writer.builder()
+                                .writerType(WriterType.ANONYMOUS)
+                                .ipAddress(securityUtil.getIp())
+                                .user(null)
+                                .name(request.getName())
+                        .build());
+            }
+            String requestIp = securityUtil.getIp();
+            writer = writerRepository.findByIpAddress(requestIp).orElseThrow(()-> WriterNotFoundException.EXCEPTION); // 대충 사용자 등록해주세요 같은 예외? ////////////////
+            region = regionRepository.findByRegionName(request.getRegion()).orElseThrow(()->RegionNotFoundException.EXCEPTION); // region 없으면 등록해줘 같은 예외 ///////
+        } else {
+            User contextInfo = securityUtil.getContextInfo();
+            writer = writerRepository.findByUser(contextInfo).orElseThrow(()->WriterNotFoundException.EXCEPTION); ////////////////////////////////////////////////////
+            region = contextInfo.getRegion();
+        }
+        postRepository.save(Post.builder()
+                    .title(request.getTitle())
+                    .image(path)
+                    .content(request.getContent())
+                    .writer(writer)
+                    .view(null)
+                    .postType(PostType.SHARE)
+                    .region(region)
+                    .password(passwordEncoder.encode(request.getPassword()))
+                .build());
+    }
+
+    // PUT
     public void updatePost(MultipartFile file, PostingUpdateRequest request, Long id) {
         Post post = postRepository.findByIdAndPostType(id, PostType.SHARE).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
         String newPath = post.getImage();
@@ -143,6 +162,7 @@ public class AnonymousPostService {
         postRepository.save(post.updateInfo(request.getTitle(), request.getContent(), newPath));
     }
 
+    // DELETE
     public void deletePost(String password, Long id) {
         Post post = postRepository.findByIdAndPostType(id, PostType.SHARE).orElseThrow(()->PostIdNotFoundException.EXCEPTION);
         if (!passwordEncoder.matches(password, post.getPassword())) throw PasswordIncorrectException.EXCEPTION;

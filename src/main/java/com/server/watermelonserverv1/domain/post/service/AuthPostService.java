@@ -14,6 +14,7 @@ import com.server.watermelonserverv1.domain.post.presentation.dto.response.PostL
 import com.server.watermelonserverv1.domain.post.presentation.dto.response.PostingDetailResponse;
 import com.server.watermelonserverv1.domain.region.domain.Region;
 import com.server.watermelonserverv1.domain.region.domain.repository.RegionRepository;
+import com.server.watermelonserverv1.domain.region.exception.RegionNotFoundException;
 import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.domain.writer.domain.Writer;
 import com.server.watermelonserverv1.domain.writer.domain.repository.WriterRepository;
@@ -51,7 +52,7 @@ public class AuthPostService {
 
     public void postingLocal(MultipartFile file, PostingRequest request) {
         User contextUser = securityUtil.getContextInfo();
-        String path = s3Util.uploadImage(file, "image");
+        String path = file == null ? null : s3Util.uploadImage(file, "image");
         try {
             Writer writer = writerRepository.findByUser(contextUser).orElseThrow(RuntimeException::new);
             postRepository.save(Post.builder()
@@ -88,6 +89,25 @@ public class AuthPostService {
                     .build())
                 .collect(Collectors.toList()))
                 .regions(regions.stream().map(Region::getRegionName).collect(Collectors.toList()))
+                .build();
+    }
+
+    public PostListResponse getRegion(Pageable pageable, String regionName) {
+        Region region = regionRepository.findByRegionName(regionName).orElseThrow(()-> RegionNotFoundException.EXCEPTION);
+        Page<Post> posts = postRepository.findByPostTypeAndRegion(PostType.LOCAL, region, pageable);
+        List<Region> regions = (List<Region>) regionRepository.findAll();
+        return PostListResponse.builder()
+                .totalPage(posts.getTotalPages())
+                .regions(regions.stream().map(Region::getRegionName).collect(Collectors.toList()))
+                .posts(posts.stream().map(
+                        e->PostListResponse.PostResponse.builder()
+                                .id(e.getId())
+                                .introduce(ResponseUtil.makeIntro(e.getContent()))
+                                .title(e.getTitle())
+                                .nickname(e.getWriter().getName())
+                                .photo(e.getImage())
+                                .build()
+                ).collect(Collectors.toList()))
                 .build();
     }
 
