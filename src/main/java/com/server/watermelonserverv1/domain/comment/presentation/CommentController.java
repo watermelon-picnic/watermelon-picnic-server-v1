@@ -4,6 +4,7 @@ import com.server.watermelonserverv1.domain.comment.presentation.dto.request.Pos
 import com.server.watermelonserverv1.domain.comment.presentation.dto.request.PutCommentRequest;
 import com.server.watermelonserverv1.domain.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,5 +23,8 @@ public class CommentController {
     public void postComment(@PathVariable Long id, @RequestBody PostCommentRequest request) { commentService.postComment(id, request); }
 
     @PutMapping("/{id}")
-    public void PutComment(@PathVariable Long id, @RequestBody PutCommentRequest request) { commentService.putComment(id, request); }
+    public void putComment(@PathVariable Long id, @RequestBody PutCommentRequest request) { commentService.putComment(id, request); }
+
+    @DeleteMapping("/{id}")
+    public void deleteComment(@PathVariable Long id, @RequestBody(required = false) String password) { commentService.deleteComment(id, password); }
 }

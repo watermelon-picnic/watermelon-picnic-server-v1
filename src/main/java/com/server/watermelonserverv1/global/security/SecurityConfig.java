@@ -66,6 +66,8 @@ public class SecurityConfig {
                         .permitAll()
                         .antMatchers(HttpMethod.PUT, "/comment/{id}")
                         .permitAll()
+                        .antMatchers(HttpMethod.DELETE, "/comment/{id}")
+                        .permitAll()
 
                         .anyRequest().denyAll()
                 )

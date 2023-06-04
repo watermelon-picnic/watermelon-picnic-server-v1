@@ -20,6 +20,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.util.annotation.Nullable;
 
 @RequiredArgsConstructor
 @Service
@@ -66,6 +67,18 @@ public class CommentService {
             Writer writer = writerRepository.findByUser(securityUtil.getContextInfo()).orElseThrow(()->WriterNotFoundException.EXCEPTION);
             if (!writer.getId().equals(comment.getWriter().getId())) throw WriterPostIncorrectException.EXCEPTION;
             commentRepository.save(comment.updateContent(request.getContent()));
+        }
+    }
+
+    public void deleteComment(Long id, @Nullable String password) {
+        Comment deleteComment = commentRepository.findById(id).orElseThrow(()->CommentNotFoundException.EXCEPTION);
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
+            if (!passwordEncoder.matches(password, deleteComment.getPassword())) throw PasswordIncorrectException.EXCEPTION;
+            commentRepository.delete(deleteComment);
+        } else {
+            Writer writer = writerRepository.findByUser(securityUtil.getContextInfo()).orElseThrow(()->WriterNotFoundException.EXCEPTION);
+            if (!writer.getId().equals(deleteComment.getWriter().getId())) throw WriterNotFoundException.EXCEPTION;
+            commentRepository.delete(deleteComment);
         }
     }
 }
