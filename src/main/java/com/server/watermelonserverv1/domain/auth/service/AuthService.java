@@ -23,6 +23,7 @@ import com.server.watermelonserverv1.domain.writer.domain.type.WriterType;
 import com.server.watermelonserverv1.global.exception.TokenNotFoundException;
 import com.server.watermelonserverv1.global.exception.UserNotFoundException;
 import com.server.watermelonserverv1.global.security.JwtProvider;
+import com.server.watermelonserverv1.global.utils.ResponseUtil;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -53,11 +54,16 @@ public class AuthService {
 
     private final RefreshRepository refreshRepository;
 
-    private final JavaMailSender javaMailSender;
+    private final ResponseUtil responseUtil;
 
     private final AuthCodeRepository authCodeRepository;
 
     private final WriterRepository writerRepository;
+
+    public boolean isNicknameExist(String nickname) {
+        if (nickname == null || nickname.isEmpty()) throw NickNameBadRequestException.EXCEPTION;
+        return userRepository.findByNickname(nickname).isPresent();
+    }
 
     public void signUp(SignUpRequest request) {
         User dbInfo = userRepository.findByEmail(request.getEmail()).orElse(null);
@@ -93,41 +99,26 @@ public class AuthService {
                 .build();
     }
 
-    public void logout() {
-        User contextInfo = securityUtil.getContextInfo();
-        Refresh refresh = refreshRepository.findById(contextInfo.getId())
-                .orElseThrow(()-> TokenNotFoundException.EXCEPTION);
-        refreshRepository.delete(refresh);
-    }
-
-//    public void validationEmail(String email) {
-//
-//    }
-    @Async
     public void emailSender(String email) {
         if (userRepository.findByEmail(email).isPresent())
             throw ExistEmailException.EXCEPTION;
         Pattern pattern = Pattern.compile("[\\d\\w]+@[\\w]+\\.[\\w]+(.[\\w]+)?");
         Matcher matcher = pattern.matcher(email);
         if (!matcher.matches()) throw EmailBadRequestException.EXCEPTION;
-        MimeMessage simpleMailMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(simpleMailMessage, "utf-8");
         String randomValue = String.format("%d", (int)Math.floor(Math.random() * (999999 - 100000 + 1) + 100000));
-        try {
-            helper.setTo(email);
-            helper.setSubject("수박나들이에서 보냅니다.");
-            helper.setText(String.format("<h1>이메일 인증코드입니다.</h1><br/><strong>%s</strong>", randomValue), true);
-        } catch (MessagingException e) { throw MessageConfigException.EXCEPTION; }
+        String htmlMsg = String.format("<h1>이메일 인증코드입니다.</h1><br/><strong>%s</strong>", randomValue);
         authCodeRepository.save(AuthCode.builder()
                         .email(email)
                         .authCode(randomValue)
                         .timeToLive(5L)
                 .build());
-        javaMailSender.send(simpleMailMessage);
+        responseUtil.sendMail(email, htmlMsg);
     }
 
-    public boolean isNicknameExist(String nickname) {
-        if (nickname == null || nickname.isEmpty()) throw NickNameBadRequestException.EXCEPTION;
-        return userRepository.findByNickname(nickname).isPresent();
+    public void logout() {
+        User contextInfo = securityUtil.getContextInfo();
+        Refresh refresh = refreshRepository.findById(contextInfo.getId())
+                .orElseThrow(()-> TokenNotFoundException.EXCEPTION);
+        refreshRepository.delete(refresh);
     }
 }

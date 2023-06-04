@@ -25,6 +25,11 @@ public class AuthController {
 
     private final AuthService authService;
 
+    // GET
+    @GetMapping("/nickname/{nickname}")
+    public boolean isNicknameExist(@PathVariable String nickname) { return authService.isNicknameExist(nickname); }
+
+    // POST
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/sign-up")
     public void signUp(@Valid @RequestBody SignUpRequest request) { authService.signUp(request); }
@@ -32,18 +37,11 @@ public class AuthController {
     @PostMapping("/login")
     public TokenResponse login(@Valid @RequestBody LoginRequest request) { return authService.login(request); }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/logout")
-    public void logout() { authService.logout(); }
-
-
-    // this api will erase
-//    @GetMapping("/email/verification")
-//    public void validationEmail(@RequestHeader String email) { authService.validationEmail(email); }
-
     @PostMapping("/email/transmission")
     public void sendEmail(@RequestHeader String email) { authService.emailSender(email); }
 
-    @GetMapping("/nickname/{nickname}")
-    public boolean isNicknameExist(@PathVariable String nickname) { return authService.isNicknameExist(nickname); }
+    // DELETE
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/logout")
+    public void logout() { authService.logout(); }
 }

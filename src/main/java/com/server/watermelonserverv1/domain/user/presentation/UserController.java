@@ -25,21 +25,24 @@ public class UserController {
 
     private final UserService userService;
 
+    // GET
+    @GetMapping("/password")
+    public String passwordSwitchPage() { return userService.passwordSwitchPage(); }
+
+    @GetMapping("/my-page")
+    public MyInfoResponse myPage() { return userService.myPage(); }
+
+    // POST
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/mail/password")
+    public void sendToChangePassword(@Valid @RequestBody Email4PWUpdateRequest request) { userService.sendToChangePassword(request.getEmail()); }
+
+    // PUT
     @ResponseStatus(HttpStatus.CREATED)
     @PutMapping("/reissue")
     public TokenResponse reissue(@RequestHeader(name = "Refresh") String refresh) { return userService.reissue(refresh); }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/mail/password")
-    public void sendToChangePassword(@Valid @RequestBody Email4PWUpdateRequest request) { userService.sendToChangePassword(request.getEmail()); }
-
-    @GetMapping("/password")
-    public String passwordSwitchPage() { return userService.passwordSwitchPage(); }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/password")
     public void passwordSwitch(@RequestBody PasswordUpdateRequest request) { userService.passwordSwitch(request.getPasswordToken(), request.getPassword()); }
-
-    @GetMapping("/my-page")
-    public MyInfoResponse myPage() { return userService.myPage(); }
 }

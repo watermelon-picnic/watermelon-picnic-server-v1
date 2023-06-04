@@ -1,7 +1,6 @@
 package com.server.watermelonserverv1.domain.user.service;
 
 import com.server.watermelonserverv1.domain.auth.domain.repository.RefreshRepository;
-import com.server.watermelonserverv1.domain.auth.exception.MessageConfigException;
 import com.server.watermelonserverv1.domain.auth.exception.TokenExpiredException;
 import com.server.watermelonserverv1.domain.auth.exception.TokenTypeNotMatchedException;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.response.TokenResponse;
@@ -11,17 +10,14 @@ import com.server.watermelonserverv1.domain.user.presentation.dto.response.MyInf
 import com.server.watermelonserverv1.global.exception.TokenNotFoundException;
 import com.server.watermelonserverv1.global.exception.UserNotFoundException;
 import com.server.watermelonserverv1.global.security.JwtProvider;
+import com.server.watermelonserverv1.global.utils.ResponseUtil;
 import com.server.watermelonserverv1.global.utils.SecurityUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -35,11 +31,34 @@ public class UserService {
 
     private final JwtProvider jwtProvider;
 
-    private final JavaMailSender javaMailSender;
+    private final ResponseUtil responseUtil;
 
     private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
+
+    public String passwordSwitchPage() {
+        String email = securityUtil.getContextInfo().getEmail();
+        return jwtProvider.passwordTokenGenerator(email);
+    }
+
+    public MyInfoResponse myPage() {
+        User contextInfo = securityUtil.getContextInfo();
+        DateFormat format = new SimpleDateFormat("yyMMdd");
+        return MyInfoResponse.builder()
+                .email(contextInfo.getEmail())
+                .nickname(contextInfo.getNickname())
+                .birth(format.format(contextInfo.getBirth()))
+                .region((contextInfo.getRegion() != null) && (contextInfo.getRegion().getRegionName() != null) ? (contextInfo.getRegion().getRegionName()) :("지역정보가 없습니다."))
+                .build();
+    }
+
+    public void sendToChangePassword(String email) {
+        // the exception happen reason is @Async annotation makes new thread, the new thread doesn't save Authentication
+//        String contextInfo = securityUtil.getContextInfo().getNickname();
+        String htmlMsg = "<h3>비밀번호 변경을 원하신다면 다음 링크를 클릭해 주십시오</h3><br/><a href=\"{URL}\">비밀번호 변경하러 가기</a>";
+        responseUtil.sendMail(email, htmlMsg);
+    }
 
     public TokenResponse reissue(String refresh) {
         Claims claims = jwtProvider.parseToken(refresh);
@@ -54,41 +73,10 @@ public class UserService {
                 .build();
     }
 
-    @Async
-    public void sendToChangePassword(String email) {
-        // the exception happen reason is @Async annotation makes new thread, the new thread doesn't save Authentication
-//        String contextInfo = securityUtil.getContextInfo().getNickname();
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-        String htmlMsg = "<h3>비밀번호 변경을 원하신다면 다음 링크를 클릭해 주십시오</h3><br/><a href=\"{URL}\">비밀번호 변경하러 가기</a>";
-        try {
-            helper.setTo(email);
-            helper.setSubject("수박나들이에서 보냅니다.");
-            helper.setText(htmlMsg, true);
-        } catch (MessagingException e) { throw MessageConfigException.EXCEPTION; }
-        javaMailSender.send(mimeMessage);
-    }
-
-    public String passwordSwitchPage() {
-        String email = securityUtil.getContextInfo().getEmail();
-        return jwtProvider.passwordTokenGenerator(email);
-    }
-
     public void passwordSwitch(String token, String password) {
         User contextInfo = securityUtil.getContextInfo();
         Claims claims = jwtProvider.parseToken(token);
         if (!claims.get("type").equals("PASSWORD")) throw TokenTypeNotMatchedException.EXCEPTION;
         userRepository.save(contextInfo.updatePassword(passwordEncoder.encode(password)));
-    }
-
-    public MyInfoResponse myPage() {
-        User contextInfo = securityUtil.getContextInfo();
-        DateFormat format = new SimpleDateFormat("yyMMdd");
-        return MyInfoResponse.builder()
-                .email(contextInfo.getEmail())
-                .nickname(contextInfo.getNickname())
-                .birth(format.format(contextInfo.getBirth()))
-                .region((contextInfo.getRegion() != null) && (contextInfo.getRegion().getRegionName() != null) ? (contextInfo.getRegion().getRegionName()) :("지역정보가 없습니다."))
-                .build();
     }
 }
