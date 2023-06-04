@@ -37,6 +37,11 @@ public class Comment extends BasedIdEntity {
     @ManyToOne
     private Writer writer;
 
+    public Comment updateContent(String content) {
+        this.content = content;
+        return this;
+    }
+
     @Builder
     public Comment(String content, Post post, Writer writer, String password) {
         this.content = content;

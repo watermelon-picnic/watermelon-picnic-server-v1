@@ -1,13 +1,16 @@
 package com.server.watermelonserverv1.domain.comment.service;
 
+import com.server.watermelonserverv1.domain.auth.exception.PasswordIncorrectException;
 import com.server.watermelonserverv1.domain.comment.domain.Comment;
 import com.server.watermelonserverv1.domain.comment.domain.repository.CommentRepository;
+import com.server.watermelonserverv1.domain.comment.exception.CommentNotFoundException;
 import com.server.watermelonserverv1.domain.comment.presentation.dto.request.PostCommentRequest;
 import com.server.watermelonserverv1.domain.comment.presentation.dto.request.PutCommentRequest;
 import com.server.watermelonserverv1.domain.post.domain.Post;
 import com.server.watermelonserverv1.domain.post.domain.repository.PostRepository;
 import com.server.watermelonserverv1.domain.post.exception.PostIdNotFoundException;
 import com.server.watermelonserverv1.domain.post.exception.WriterNotFoundException;
+import com.server.watermelonserverv1.domain.post.exception.WriterPostIncorrectException;
 import com.server.watermelonserverv1.domain.writer.domain.Writer;
 import com.server.watermelonserverv1.domain.writer.domain.repository.WriterRepository;
 import com.server.watermelonserverv1.domain.writer.domain.type.WriterType;
@@ -55,6 +58,14 @@ public class CommentService {
     }
 
     public void putComment(Long id, PutCommentRequest request) {
-        commentRepository.findById(id).orElseThrow();
+        Comment comment = commentRepository.findById(id).orElseThrow(()-> CommentNotFoundException.EXCEPTION);
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
+            if (!passwordEncoder.matches(request.getPassword(), comment.getPassword())) throw PasswordIncorrectException.EXCEPTION;
+            commentRepository.save(comment.updateContent(request.getContent()));
+        } else {
+            Writer writer = writerRepository.findByUser(securityUtil.getContextInfo()).orElseThrow(()->WriterNotFoundException.EXCEPTION);
+            if (!writer.getId().equals(comment.getWriter().getId())) throw WriterPostIncorrectException.EXCEPTION;
+            commentRepository.save(comment.updateContent(request.getContent()));
+        }
     }
 }
