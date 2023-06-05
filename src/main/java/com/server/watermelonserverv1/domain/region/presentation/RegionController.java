@@ -19,9 +19,9 @@ public class RegionController {
 
     private final RegionService regionService;
 
-    @PutMapping
+    @PostMapping
     public RegionResponse registerRegion(@RequestParam(name = "region_name") String name) { return regionService.registerRegion(name); }
 
-    @PostMapping("/setting/{region}")
+    @PutMapping("/setting/{region}")
     public void registerRegionIntroduce(@PathVariable String region, @RequestBody RegionIntroduceRequest req) { regionService.registerRegionIntroduce(region, req.getIntroduce()); }
 }

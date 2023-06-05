@@ -58,7 +58,7 @@ public class SecurityConfig {
                         .authenticated()
 
                         // "/region"
-                        .antMatchers(HttpMethod.POST, "/region/setting/{region}")
+                        .antMatchers(HttpMethod.PUT, "/region/setting/{region}")
                         .hasAuthority("ADMIN")
 
                         // "/comment"
@@ -103,7 +103,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/post/auth/region")
 
                 // "/region"
-                .antMatchers(HttpMethod.PUT, "/region")
+                .antMatchers(HttpMethod.POST, "/region")
 
                 // "/"
                 .antMatchers(HttpMethod.GET, "/main-page")

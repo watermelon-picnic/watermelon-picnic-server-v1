@@ -22,7 +22,8 @@ public enum ErrorCode {
     IMAGE_BAD_REQUEST_EXCEPTION("사진 요청형식이 알맞지 않습니다.", 415),
     REGION_NOT_FOUND_EXCEPTION("요청한 지역의 정보를 찾을 수 없습니다.", 404),
     WRITER_POST_INCORRECT_EXCEPTION("작성자만 접근할 수 있습니다.", 400),
-    COMMENT_NOT_FOUND_EXCEPTION("댓글을 찾을 수 없습니다.", 404);
+    COMMENT_NOT_FOUND_EXCEPTION("댓글을 찾을 수 없습니다.", 404),
+    REGION_ALREADY_EXIST_EXCEPTION("해당 지역은 이미 등록되어있습니다.", 409);
 
     private final String message;
     private final int statusCode;
