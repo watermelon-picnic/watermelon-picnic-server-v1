@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class PutCommentRequest {
 
-    @NotBlank
+    @NotBlank(message = "please init any value in content")
     private String content;
 
     private String password;

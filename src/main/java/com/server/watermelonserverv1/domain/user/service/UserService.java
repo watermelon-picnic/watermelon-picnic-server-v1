@@ -49,7 +49,7 @@ public class UserService {
                 .email(contextInfo.getEmail())
                 .nickname(contextInfo.getNickname())
                 .birth(format.format(contextInfo.getBirth()))
-                .region((contextInfo.getRegion() != null) && (contextInfo.getRegion().getRegionName() != null) ? (contextInfo.getRegion().getRegionName()) :("지역정보가 없습니다."))
+                .region((contextInfo.getRegion() != null) ? (contextInfo.getRegion().getRegionName()) :("지역정보가 없습니다."))
                 .build();
     }
 

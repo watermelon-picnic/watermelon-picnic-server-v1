@@ -116,6 +116,7 @@ public class AuthPostService {
                 .orElseThrow(()-> PostIdNotFoundException.EXCEPTION);
         DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
         List<Comment> comments = commentRepository.findByPost(post);
+        postRepository.save(post.addView());
         return PostingDetailResponse.builder()
                 .title(post.getTitle())
                 .name(post.getWriter().getName()) // query********************************

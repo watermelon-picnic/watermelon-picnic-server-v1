@@ -99,7 +99,7 @@ public class AuthService {
                 .build();
     }
 
-    public void emailSender(String email) {
+    public String emailSender(String email) {
         if (userRepository.findByEmail(email).isPresent())
             throw ExistEmailException.EXCEPTION;
         Pattern pattern = Pattern.compile("[\\d\\w]+@[\\w]+\\.[\\w]+(.[\\w]+)?");
@@ -113,6 +113,7 @@ public class AuthService {
                         .timeToLive(5L)
                 .build());
         responseUtil.sendMail(email, htmlMsg);
+        return randomValue;
     }
 
     public void logout() {

@@ -70,6 +70,11 @@ public class Post extends BasedIdEntity {
         this.image = image;
         return this;
     }
+
+    public Post addView() {
+        this.view += 1;
+        return this;
+    }
     @Builder
     public Post(String title, Long view, String content, String image, PostType postType, Writer writer, Region region, String password) {
         this.title = title;

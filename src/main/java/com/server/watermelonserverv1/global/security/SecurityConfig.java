@@ -40,10 +40,12 @@ public class SecurityConfig {
                         // "/user"
                         .antMatchers(HttpMethod.GET, "/user/my-page")
                         .authenticated()
-                        .antMatchers(HttpMethod.POST, "/user/mail/password")
-                        .authenticated()
                         .antMatchers(HttpMethod.GET, "/user/password")
                         .authenticated()
+
+                        .antMatchers(HttpMethod.POST, "/user/mail/password")
+                        .authenticated()
+
                         .antMatchers(HttpMethod.PUT, "/user/password")
                         .authenticated()
                         .antMatchers(HttpMethod.PUT, "/user/reissue")
@@ -52,10 +54,29 @@ public class SecurityConfig {
                         // "/post/auth"
                         .antMatchers(HttpMethod.POST, "/post/auth/posting")
                         .authenticated()
+
                         .antMatchers(HttpMethod.PUT, "/post/auth/{id}")
                         .authenticated()
+
                         .antMatchers(HttpMethod.DELETE, "/post/auth/{id}")
                         .authenticated()
+
+                        // "/post/anonymous"
+                        .antMatchers(HttpMethod.GET, "/post/anonymous")
+                        .permitAll()
+                        .antMatchers(HttpMethod.GET, "/post/anonymous/{id}")
+                        .permitAll()
+                        .antMatchers(HttpMethod.GET, "/post/anonymous/region")
+                        .permitAll()
+
+                        .antMatchers(HttpMethod.POST, "/post/anonymous/posting")
+                        .permitAll()
+
+                        .antMatchers(HttpMethod.PUT, "/post/anonymous/{id}")
+                        .permitAll()
+
+                        .antMatchers(HttpMethod.DELETE, "/post/anonymous/{id}")
+                        .permitAll()
 
                         // "/region"
                         .antMatchers(HttpMethod.PUT, "/region/setting/{region}")
@@ -64,8 +85,10 @@ public class SecurityConfig {
                         // "/comment"
                         .antMatchers(HttpMethod.POST, "/comment/{id}")
                         .permitAll()
+
                         .antMatchers(HttpMethod.PUT, "/comment/{id}")
                         .permitAll()
+
                         .antMatchers(HttpMethod.DELETE, "/comment/{id}")
                         .permitAll()
 
@@ -83,23 +106,15 @@ public class SecurityConfig {
                 .requestMatchers(CorsUtils::isPreFlightRequest)
 
                 // "/auth"
-//                .antMatchers(HttpMethod.GET, "/auth/email/verification")
-                .antMatchers(HttpMethod.POST, "/auth/email/transmission")
                 .antMatchers(HttpMethod.GET, "/auth/nickname/{nickname}")
+
+                .antMatchers(HttpMethod.POST, "/auth/email/transmission")
                 .antMatchers(HttpMethod.POST, "/auth/sign-up")
                 .antMatchers(HttpMethod.POST, "/auth/login")
 
-                // "/post/anonymous"
-                .antMatchers(HttpMethod.GET, "/post/anonymous")
-                .antMatchers(HttpMethod.GET, "/post/anonymous/{id}")
-                .antMatchers(HttpMethod.GET, "/post/anonymous/region")
-                .antMatchers(HttpMethod.POST, "/post/anonymous/posting")
-                .antMatchers(HttpMethod.PUT, "/post/anonymous/{id}")
-                .antMatchers(HttpMethod.DELETE, "/post/anonymous/{id}")
-
                 // "/post/auth"
                 .antMatchers(HttpMethod.GET, "/post/auth")
-                .antMatchers(HttpMethod.GET, "/post/{id}")
+                .antMatchers(HttpMethod.GET, "/post/auth/{id}")
                 .antMatchers(HttpMethod.GET, "/post/auth/region")
 
                 // "/region"

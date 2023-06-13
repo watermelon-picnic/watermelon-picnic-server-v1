@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class PostCommentRequest {
 
-    @NotBlank
+    @NotBlank(message = "please init any value in content field")
     private String content;
 
     // for anonymous user

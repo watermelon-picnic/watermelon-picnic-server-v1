@@ -38,7 +38,7 @@ public class AuthController {
     public TokenResponse login(@Valid @RequestBody LoginRequest request) { return authService.login(request); }
 
     @PostMapping("/email/transmission")
-    public void sendEmail(@RequestHeader String email) { authService.emailSender(email); }
+    public String sendEmail(@RequestHeader String email) { return authService.emailSender(email); }
 
     // DELETE
     @ResponseStatus(HttpStatus.NO_CONTENT)

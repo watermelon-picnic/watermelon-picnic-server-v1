@@ -44,5 +44,5 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/password")
-    public void passwordSwitch(@RequestBody PasswordUpdateRequest request) { userService.passwordSwitch(request.getPasswordToken(), request.getPassword()); }
+    public void passwordSwitch(@Valid @RequestBody PasswordUpdateRequest request) { userService.passwordSwitch(request.getPasswordToken(), request.getPassword()); }
 }

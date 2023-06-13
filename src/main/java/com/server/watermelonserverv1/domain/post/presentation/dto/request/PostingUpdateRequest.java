@@ -7,10 +7,10 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 public class PostingUpdateRequest {
 
-    @NotEmpty
+    @NotEmpty(message = "please init any value in title")
     private String title;
 
-    @NotEmpty
+    @NotEmpty(message = "please init any value in content")
     private String content;
 
     private String password;

@@ -32,7 +32,7 @@ public class AuthPostController {
 
     // GET
     @GetMapping
-    public PostListResponse getLocalPosting(@PageableDefault(size = 6) Pageable pageable) { return authPostService.getLocalPosting(pageable); }
+    public PostListResponse getLocalPosting(@PageableDefault Pageable pageable) { return authPostService.getLocalPosting(pageable); }
 
     @GetMapping("/region")
     public PostListResponse getRegion(@PageableDefault Pageable pageable, @RequestParam("name") String region) { return authPostService.getRegion(pageable, region); }

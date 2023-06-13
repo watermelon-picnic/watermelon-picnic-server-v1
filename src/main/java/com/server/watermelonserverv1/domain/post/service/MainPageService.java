@@ -35,7 +35,7 @@ public class MainPageService {
                         ).collect(Collectors.toList())
                 )
                 .watermelonLoad(
-                        posts.subList(0, Math.min(regions.size(), 13))
+                        posts.subList(0, Math.min(posts.size(), 13))
                                 .stream().map(
                         e->MainPageResponse.TravelLoad.builder()
                                 .title(e.getTitle())
@@ -48,7 +48,7 @@ public class MainPageService {
                                 .build()
                 ).collect(Collectors.toList()))
                 .variableTravelRegion(
-                        posts.subList(0, Math.min(regions.size(), 9))
+                        posts.subList(0, Math.min(posts.size(), 9))
                                 .stream().map(
                         e->MainPageResponse.NearPost.builder()
                                 .content(ResponseUtil.makeIntro(e.getContent()))

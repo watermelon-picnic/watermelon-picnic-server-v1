@@ -57,5 +57,5 @@ public class AnonymousPostController {
     // DELETE
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void deletePost(@PathVariable Long id, @RequestParam("password") String password) { anonymousPostService.deletePost(password, id); }
+    public void deletePost(@PathVariable Long id, @RequestParam(value = "password", required = false) String password) { anonymousPostService.deletePost(password, id); }
 }
