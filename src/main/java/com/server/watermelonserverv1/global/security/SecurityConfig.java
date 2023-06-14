@@ -50,6 +50,8 @@ public class SecurityConfig {
                         .authenticated()
                         .antMatchers(HttpMethod.PUT, "/user/reissue")
                         .authenticated()
+                        .antMatchers(HttpMethod.PUT, "/user/region")
+                        .authenticated()
 
                         // "/post/auth"
                         .antMatchers(HttpMethod.POST, "/post/auth/posting")
@@ -119,6 +121,7 @@ public class SecurityConfig {
 
                 // "/region"
                 .antMatchers(HttpMethod.POST, "/region")
+                .antMatchers(HttpMethod.GET, "/region/all")
 
                 // "/"
                 .antMatchers(HttpMethod.GET, "/main-page")

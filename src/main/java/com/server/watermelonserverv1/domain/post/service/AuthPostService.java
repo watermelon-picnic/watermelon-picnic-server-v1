@@ -65,12 +65,12 @@ public class AuthPostService {
                     .image(path)
                     .build());
         } catch (RuntimeException e) {
-            writerRepository.save(Writer.builder()
-                            .writerType(WriterType.USER)
-                            .ipAddress(null)
-                            .user(contextUser)
-                            .name(contextUser.getNickname())
-                    .build());
+//            writerRepository.save(Writer.builder()
+//                            .writerType(WriterType.USER)
+//                            .ipAddress(null)
+//                            .user(contextUser)
+//                            .name(contextUser.getNickname())
+//                    .build());
             throw WriterNotFoundException.EXCEPTION;
         }
     }

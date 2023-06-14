@@ -6,6 +6,7 @@ import com.server.watermelonserverv1.domain.comment.domain.repository.CommentRep
 import com.server.watermelonserverv1.domain.post.domain.Post;
 import com.server.watermelonserverv1.domain.post.domain.repository.PostRepository;
 import com.server.watermelonserverv1.domain.post.domain.type.PostType;
+import com.server.watermelonserverv1.domain.post.exception.NotExistRegionIsUserConflictException;
 import com.server.watermelonserverv1.domain.post.exception.PostIdNotFoundException;
 import com.server.watermelonserverv1.domain.post.exception.WriterNotFoundException;
 import com.server.watermelonserverv1.domain.post.exception.WriterPostIncorrectException;
@@ -146,6 +147,7 @@ public class AnonymousPostService {
             User contextInfo = securityUtil.getContextInfo();
             writer = writerRepository.findByUser(contextInfo).orElseThrow(()->WriterNotFoundException.EXCEPTION); ////////////////////////////////////////////////////
             region = contextInfo.getRegion();
+            if (region == null) throw NotExistRegionIsUserConflictException.EXCEPTION;
         }
         postRepository.save(Post.builder()
                     .title(request.getTitle())

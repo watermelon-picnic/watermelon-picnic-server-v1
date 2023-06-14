@@ -8,6 +8,7 @@ import com.server.watermelonserverv1.domain.post.service.AnonymousPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,7 @@ public class AnonymousPostController {
     public PostingDetailResponse postDetail(@PathVariable Long id) { return anonymousPostService.postDetail(id); }
 
     // POST
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/posting")
     public void postingShare(@RequestPart(value = "file", required = false) MultipartFile file, @Valid @RequestPart("json-body") PostingRequest request) { anonymousPostService.postingShare(file, request); }
 

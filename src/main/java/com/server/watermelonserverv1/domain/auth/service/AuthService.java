@@ -79,12 +79,13 @@ public class AuthService {
                     .nickname(request.getNickname())
                     .birth(format.parse(request.getBirth()))
                     .build());
-            writerRepository.save(Writer.builder()
-                            .user(savedUser)
-                            .ipAddress(null)
-                            .writerType(WriterType.USER)
-                            .name(savedUser.getNickname())
-                    .build());
+            if (writerRepository.findByUser(savedUser).isEmpty())
+                writerRepository.save(Writer.builder()
+                                .user(savedUser)
+                                .ipAddress(null)
+                                .writerType(WriterType.USER)
+                                .name(savedUser.getNickname())
+                        .build());
         } catch (ParseException e) { throw BirthBadRequestException.EXCEPTION; }
     }
 

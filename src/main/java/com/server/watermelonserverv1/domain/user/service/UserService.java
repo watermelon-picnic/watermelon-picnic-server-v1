@@ -4,6 +4,9 @@ import com.server.watermelonserverv1.domain.auth.domain.repository.RefreshReposi
 import com.server.watermelonserverv1.domain.auth.exception.TokenExpiredException;
 import com.server.watermelonserverv1.domain.auth.exception.TokenTypeNotMatchedException;
 import com.server.watermelonserverv1.domain.auth.presentation.dto.response.TokenResponse;
+import com.server.watermelonserverv1.domain.region.domain.Region;
+import com.server.watermelonserverv1.domain.region.domain.repository.RegionRepository;
+import com.server.watermelonserverv1.domain.region.exception.RegionNotFoundException;
 import com.server.watermelonserverv1.domain.user.domain.User;
 import com.server.watermelonserverv1.domain.user.domain.repository.UserRepository;
 import com.server.watermelonserverv1.domain.user.presentation.dto.response.MyInfoResponse;
@@ -37,6 +40,9 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private final RegionRepository regionRepository;
+
+    // GET
     public String passwordSwitchPage() {
         String email = securityUtil.getContextInfo().getEmail();
         return jwtProvider.passwordTokenGenerator(email);
@@ -53,6 +59,7 @@ public class UserService {
                 .build();
     }
 
+    // POST
     public void sendToChangePassword(String email) {
         // the exception happen reason is @Async annotation makes new thread, the new thread doesn't save Authentication
 //        String contextInfo = securityUtil.getContextInfo().getNickname();
@@ -60,6 +67,7 @@ public class UserService {
         responseUtil.sendMail(email, htmlMsg);
     }
 
+    // PUT
     public TokenResponse reissue(String refresh) {
         Claims claims = jwtProvider.parseToken(refresh);
         User contextInfo = userRepository.findByEmail(claims.getSubject())
@@ -78,5 +86,10 @@ public class UserService {
         Claims claims = jwtProvider.parseToken(token);
         if (!claims.get("type").equals("PASSWORD")) throw TokenTypeNotMatchedException.EXCEPTION;
         userRepository.save(contextInfo.updatePassword(passwordEncoder.encode(password)));
+    }
+
+    public void setUserRegionInformation(String regionName) {
+        Region region = regionRepository.findByRegionName(regionName).orElseThrow(()-> RegionNotFoundException.EXCEPTION);
+        userRepository.save(securityUtil.getContextInfo().setRegion(region));
     }
 }

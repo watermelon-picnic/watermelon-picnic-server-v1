@@ -63,6 +63,11 @@ public class User extends BasedIdEntity {
         return this;
     }
 
+    public User setRegion(Region region) {
+        this.region = region;
+        return this;
+    }
+
     @Builder
     public User(String email, String password, String nickname, Role role, Date birth) {
         this.email = email;
