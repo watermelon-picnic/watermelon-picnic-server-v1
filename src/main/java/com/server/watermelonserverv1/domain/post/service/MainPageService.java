@@ -40,7 +40,7 @@ public class MainPageService {
                         e->MainPageResponse.TravelLoad.builder()
                                 .title(e.getTitle())
                                 .regionName(e.getRegion().getRegionName())
-                                .introduce(ResponseUtil.makeIntro(e.getContent()))
+                                .introduce(e.getContent())
                                 .writerName(e.getWriter().getName())
                                 .image(e.getImage())
                                 .type(e.getPostType())
@@ -51,7 +51,7 @@ public class MainPageService {
                         regions.subList(0, Math.min(regions.size(), 9))
                                 .stream().map(
                         e->MainPageResponse.NearPost.builder()
-                                .content(ResponseUtil.makeIntro(e.getIntroduce()))
+                                .content(e.getIntroduce())
                                 .region(e.getRegionName())
                                 .image(e.getImage())
                                 .id(e.getId())

@@ -71,7 +71,7 @@ public class AnonymousPostService {
                 .posts(posts.stream().map((element)-> PostListResponse.PostResponse.builder()
                         .id(element.getId())
                         .photo(element.getImage())
-                        .introduce(ResponseUtil.makeIntro(element.getContent()))
+                        .introduce(element.getContent())
                         .nickname(element.getWriter().getName()) // query*************************
                         .title(element.getTitle())
                         .build()).collect(Collectors.toList()))
@@ -92,7 +92,7 @@ public class AnonymousPostService {
                                         .id(e.getId())
                                         .title(e.getTitle())
                                         .nickname(e.getWriter().getName())
-                                        .introduce(ResponseUtil.makeIntro(e.getContent()))
+                                        .introduce(e.getContent())
                                         .photo(e.getImage())
                                         .build()
                         ).collect(Collectors.toList())

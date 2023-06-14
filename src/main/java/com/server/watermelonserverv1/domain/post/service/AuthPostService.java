@@ -84,7 +84,7 @@ public class AuthPostService {
                         .id(element.getId())
                         .title(element.getTitle())
                         .nickname(element.getWriter().getName()) // query********************************
-                        .introduce(ResponseUtil.makeIntro(element.getContent()))
+                        .introduce(element.getContent())
                         .photo(element.getImage())
                     .build())
                 .collect(Collectors.toList()))
@@ -102,7 +102,7 @@ public class AuthPostService {
                 .posts(posts.stream().map(
                         e->PostListResponse.PostResponse.builder()
                                 .id(e.getId())
-                                .introduce(ResponseUtil.makeIntro(e.getContent()))
+                                .introduce(e.getContent())
                                 .title(e.getTitle())
                                 .nickname(e.getWriter().getName())
                                 .photo(e.getImage())
