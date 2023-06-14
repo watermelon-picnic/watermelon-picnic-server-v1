@@ -43,7 +43,7 @@ public class AuthPostController {
     // POST
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/posting")
-    public void postLocal(@RequestPart("file") MultipartFile file, @RequestPart("json-body") @Valid PostingRequest request) { authPostService.postingLocal(file, request); }
+    public void postLocal(@RequestPart(value = "file", required = false) MultipartFile file, @RequestPart("json-body") @Valid PostingRequest request) { authPostService.postingLocal(file, request); }
 
     // PUT
     @ResponseStatus(HttpStatus.NO_CONTENT)
