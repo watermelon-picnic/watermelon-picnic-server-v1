@@ -57,11 +57,9 @@ public class MainPageResponse {
 
         private String image;
 
-        private String title;
+        private String region;
 
         private String content;
-
-        private PostType type;
 
         private Long id;
 

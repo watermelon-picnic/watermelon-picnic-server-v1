@@ -48,13 +48,12 @@ public class MainPageService {
                                 .build()
                 ).collect(Collectors.toList()))
                 .variableTravelRegion(
-                        posts.subList(0, Math.min(posts.size(), 9))
+                        regions.subList(0, Math.min(regions.size(), 9))
                                 .stream().map(
                         e->MainPageResponse.NearPost.builder()
-                                .content(ResponseUtil.makeIntro(e.getContent()))
-                                .title(e.getTitle())
+                                .content(ResponseUtil.makeIntro(e.getIntroduce()))
+                                .region(e.getRegionName())
                                 .image(e.getImage())
-                                .type(e.getPostType())
                                 .id(e.getId())
                                 .build()
                 ).collect(Collectors.toList()))
