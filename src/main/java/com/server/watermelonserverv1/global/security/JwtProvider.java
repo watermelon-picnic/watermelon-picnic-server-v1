@@ -78,7 +78,7 @@ public class JwtProvider {
         refreshRepository.save(Refresh.builder()
                             .id(user.getId())
                             .token(token)
-                            .timeToLive(refreshExp)
+                            .timeToLive(refreshExp * 1000L)
                     .build()
         );
         return token;
